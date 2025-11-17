@@ -1,0 +1,57 @@
+{
+  "createdAt": "2025-10-14T20:54:33.807Z",
+  "updatedAt": "2025-10-15T01:18:08.651Z",
+  "id": "ndEWbnyDrZ3EMDZF",
+  "name": "Ad Reviewed",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9",
+          "mode": "list",
+          "cachedResultName": "dev--ads--ad-changed-events--bzo9",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bd9d1a00-e1cc-49cb-93d5-75c6d56ee14f",
+      "name": "AWS SNS Trigger",
+      "webhookId": "365ad753-87ed-4f26-ae5e-e305e047ccbe",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b18c2aae-ec8c-4b3c-85b2-55d9bbcfa5d4",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-14T20:54:33.807Z",
+      "updatedAt": "2025-10-14T20:54:33.807Z",
+      "role": "workflow:owner",
+      "workflowId": "ndEWbnyDrZ3EMDZF",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
