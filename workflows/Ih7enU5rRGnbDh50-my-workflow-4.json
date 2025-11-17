@@ -1,1 +1,57 @@
-teste
+{
+  "createdAt": "2025-11-14T17:56:45.960Z",
+  "updatedAt": "2025-11-14T17:56:45.960Z",
+  "id": "Ih7enU5rRGnbDh50",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--dmp--cookie-pool-changed-events--033y",
+          "mode": "list",
+          "cachedResultName": "dev--dmp--cookie-pool-changed-events--033y",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--dmp--cookie-pool-changed-events--033y"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "41e4ebcc-287c-4167-b7f2-48ba4675c2cb",
+      "name": "AWS SNS Trigger",
+      "webhookId": "63394678-1f8d-416c-8c07-72e98b87843b",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "668e2a88-efe5-41b5-bd23-cc327f6c8cd7",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-14T17:56:45.960Z",
+      "updatedAt": "2025-11-14T17:56:45.960Z",
+      "role": "workflow:owner",
+      "workflowId": "Ih7enU5rRGnbDh50",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
