@@ -1,0 +1,72 @@
+{
+  "createdAt": "2025-10-04T15:45:03.048Z",
+  "updatedAt": "2025-10-04T19:00:48.207Z",
+  "id": "ONN9Qod4YUu3kcQL",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -96
+      ],
+      "id": "d41f4d6f-5095-48e1-b6c0-1ed471fb852c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        -96
+      ],
+      "id": "43d24734-4065-447a-8bdd-132e23f128fa",
+      "name": "HTTP Request1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:AWS SNS Trigger": {
+      "webhookId": "arn:aws:sns:us-east-1:359312844241:prd--ads--build-changed-events--aaux:867b1a81-e3d6-440a-967f-8f9bc9add799"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ad7746ee-030f-49d8-bfba-6f7d15965416",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-04T15:45:03.048Z",
+      "updatedAt": "2025-10-04T15:45:03.048Z",
+      "role": "workflow:owner",
+      "workflowId": "ONN9Qod4YUu3kcQL",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
