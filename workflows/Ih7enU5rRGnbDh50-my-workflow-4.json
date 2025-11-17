@@ -50,7 +50,59 @@
       "updatedAt": "2025-11-14T17:56:45.960Z",
       "role": "workflow:owner",
       "workflowId": "Ih7enU5rRGnbDh50",
-      "projectId": "yFYBfulVbeQlFXcl"
+      "projectId": "yFYBfulVbeQlFXcl",
+      "project": {
+        "createdAt": "2025-10-03T19:11:28.982Z",
+        "updatedAt": "2025-10-04T15:26:25.361Z",
+        "id": "yFYBfulVbeQlFXcl",
+        "name": "Team Product N8N <n8n-accounts@bluemarketing.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "projectRelations": [
+          {
+            "createdAt": "2025-10-03T19:11:28.982Z",
+            "updatedAt": "2025-10-03T19:11:28.982Z",
+            "userId": "fe74d127-3716-418e-ad4e-405d9c27f308",
+            "projectId": "yFYBfulVbeQlFXcl",
+            "user": {
+              "createdAt": "2025-10-03T19:11:27.159Z",
+              "updatedAt": "2025-11-17T19:19:25.226Z",
+              "id": "fe74d127-3716-418e-ad4e-405d9c27f308",
+              "email": "n8n-accounts@bluemarketing.com",
+              "firstName": "Team Product",
+              "lastName": "N8N",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2025-10-04T15:28:26.660Z",
+                "personalization_survey_n8n_version": "1.81.0",
+                "automationGoalDevops": [
+                  "ticketing-systems-integrations"
+                ],
+                "companySize": "personalUser",
+                "companyType": "digital-agency",
+                "role": "engineering",
+                "reportedSource": "friend"
+              },
+              "settings": {
+                "userActivated": true,
+                "easyAIWorkflowOnboarded": true,
+                "firstSuccessfulWorkflowId": "nRERKwcvnKKpeU9f",
+                "userActivatedAt": 1762267758498,
+                "npsSurvey": {
+                  "waitingForResponse": true,
+                  "ignoredCount": 2,
+                  "lastShownAt": 1763407162102
+                }
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2025-11-17",
+              "isPending": false
+            }
+          }
+        ]
+      }
     }
   ],
   "tags": []
