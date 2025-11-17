@@ -1,35 +1,57 @@
-ewogICJjcmVhdGVkQXQiOiAiMjAyNS0xMS0xNFQxNzo1Njo0NS45NjBaIiwK
-ICAidXBkYXRlZEF0IjogIjIwMjUtMTEtMTRUMTc6NTY6NDUuOTYwWiIsCiAg
-ImlkIjogIkloN2VuVTVyUkduYkRoNTAiLAogICJuYW1lIjogIk15IHdvcmtm
-bG93IDQiLAogICJhY3RpdmUiOiBmYWxzZSwKICAiaXNBcmNoaXZlZCI6IGZh
-bHNlLAogICJub2RlcyI6IFsKICAgIHsKICAgICAgInBhcmFtZXRlcnMiOiB7
-CiAgICAgICAgInRvcGljIjogewogICAgICAgICAgIl9fcmwiOiB0cnVlLAog
-ICAgICAgICAgInZhbHVlIjogImFybjphd3M6c25zOnVzLWVhc3QtMjozNTkz
-MTI4NDQyNDE6ZGV2LS1kbXAtLWNvb2tpZS1wb29sLWNoYW5nZWQtZXZlbnRz
-LS0wMzN5IiwKICAgICAgICAgICJtb2RlIjogImxpc3QiLAogICAgICAgICAg
-ImNhY2hlZFJlc3VsdE5hbWUiOiAiZGV2LS1kbXAtLWNvb2tpZS1wb29sLWNo
-YW5nZWQtZXZlbnRzLS0wMzN5IiwKICAgICAgICAgICJjYWNoZWRSZXN1bHRV
-cmwiOiAiaHR0cHM6Ly91cy1lYXN0LTIuY29uc29sZS5hd3MuYW1hem9uLmNv
-bS9zbnMvdjMvaG9tZT9yZWdpb249dXMtZWFzdC0yIy90b3BpYy9hcm46YXdz
-OnNuczp1cy1lYXN0LTI6MzU5MzEyODQ0MjQxOmRldi0tZG1wLS1jb29raWUt
-cG9vbC1jaGFuZ2VkLWV2ZW50cy0tMDMzeSIKICAgICAgICB9CiAgICAgIH0s
-CiAgICAgICJ0eXBlIjogIm44bi1ub2Rlcy1iYXNlLmF3c1Nuc1RyaWdnZXIi
-LAogICAgICAidHlwZVZlcnNpb24iOiAxLAogICAgICAicG9zaXRpb24iOiBb
-CiAgICAgICAgMCwKICAgICAgICAwCiAgICAgIF0sCiAgICAgICJpZCI6ICI0
-MWU0ZWJjYy0yODdjLTQxNjctYjdmMi00OGJhNDY3NWMyY2IiLAogICAgICAi
-bmFtZSI6ICJBV1MgU05TIFRyaWdnZXIiLAogICAgICAid2ViaG9va0lkIjog
-IjYzMzk0Njc4LTFmOGQtNDE2Yy04YzA3LTcyZTk4Yjg3ODQzYiIsCiAgICAg
-ICJjcmVkZW50aWFscyI6IHsKICAgICAgICAiYXdzIjogewogICAgICAgICAg
-ImlkIjogIjZhMkxlUjFKRmRMRWVUZ2MiLAogICAgICAgICAgIm5hbWUiOiAi
-QVdTIGFjY291bnQiCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAi
-Y29ubmVjdGlvbnMiOiB7fSwKICAic2V0dGluZ3MiOiB7CiAgICAiZXhlY3V0
-aW9uT3JkZXIiOiAidjEiCiAgfSwKICAic3RhdGljRGF0YSI6IG51bGwsCiAg
-Im1ldGEiOiB7CiAgICAidGVtcGxhdGVDcmVkc1NldHVwQ29tcGxldGVkIjog
-dHJ1ZQogIH0sCiAgInBpbkRhdGEiOiB7fSwKICAidmVyc2lvbklkIjogIjY2
-OGUyYTg4LWVmZTUtNDFiNS1iZDIzLWNjMzI3ZjZjOGNkNyIsCiAgInRyaWdn
-ZXJDb3VudCI6IDAsCiAgInNoYXJlZCI6IFsKICAgIHsKICAgICAgImNyZWF0
-ZWRBdCI6ICIyMDI1LTExLTE0VDE3OjU2OjQ1Ljk2MFoiLAogICAgICAidXBk
-YXRlZEF0IjogIjIwMjUtMTEtMTRUMTc6NTY6NDUuOTYwWiIsCiAgICAgICJy
-b2xlIjogIndvcmtmbG93Om93bmVyIiwKICAgICAgIndvcmtmbG93SWQiOiAi
-SWg3ZW5VNXJSR25iRGg1MCIsCiAgICAgICJwcm9qZWN0SWQiOiAieUZZQmZ1
-bFZiZVFsRlhjbCIKICAgIH0KICBdLAogICJ0YWdzIjogW10KfQ==
+{
+  "createdAt": "2025-11-14T17:56:45.960Z",
+  "updatedAt": "2025-11-14T17:56:45.960Z",
+  "id": "Ih7enU5rRGnbDh50",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--dmp--cookie-pool-changed-events--033y",
+          "mode": "list",
+          "cachedResultName": "dev--dmp--cookie-pool-changed-events--033y",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--dmp--cookie-pool-changed-events--033y"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "41e4ebcc-287c-4167-b7f2-48ba4675c2cb",
+      "name": "AWS SNS Trigger",
+      "webhookId": "63394678-1f8d-416c-8c07-72e98b87843b",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "668e2a88-efe5-41b5-bd23-cc327f6c8cd7",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-14T17:56:45.960Z",
+      "updatedAt": "2025-11-14T17:56:45.960Z",
+      "role": "workflow:owner",
+      "workflowId": "Ih7enU5rRGnbDh50",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
