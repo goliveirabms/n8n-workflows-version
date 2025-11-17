@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-11-04T14:08:18.364Z",
-  "updatedAt": "2025-11-17T22:33:01.862Z",
+  "updatedAt": "2025-11-17T22:35:24.169Z",
   "id": "GacbtOdXGScd1V3r",
   "name": "[acc--account] Activation - First Campaign",
   "active": false,
@@ -294,7 +294,9 @@
       "name": "Function D-7"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "content": "hello world"
+      },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         -1216,
@@ -455,7 +457,7 @@
       }
     ]
   },
-  "versionId": "0fca8b00-1f30-4eb6-a532-2b80ff13d678",
+  "versionId": "3579613e-58d5-4175-89e5-21181ef4412c",
   "triggerCount": 1,
   "shared": [
     {
