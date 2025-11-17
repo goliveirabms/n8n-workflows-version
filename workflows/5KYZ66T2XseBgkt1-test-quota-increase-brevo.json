@@ -1,0 +1,28 @@
+{
+  "createdAt": "2025-10-24T14:17:19.400Z",
+  "updatedAt": "2025-11-07T11:48:41.768Z",
+  "id": "5KYZ66T2XseBgkt1",
+  "name": "Test Quota Increase BREVO",
+  "active": false,
+  "isArchived": true,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "2819e3e2-9995-4c9c-8abd-77e84dbed092",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-24T14:17:19.400Z",
+      "updatedAt": "2025-10-24T14:17:19.400Z",
+      "role": "workflow:owner",
+      "workflowId": "5KYZ66T2XseBgkt1",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
