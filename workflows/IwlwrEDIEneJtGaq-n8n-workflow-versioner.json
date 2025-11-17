@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-11-11T19:43:26.929Z",
-  "updatedAt": "2025-11-17T22:20:58.505Z",
+  "updatedAt": "2025-11-17T22:22:02.526Z",
   "id": "IwlwrEDIEneJtGaq",
   "name": "n8n-workflow-versioner",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
