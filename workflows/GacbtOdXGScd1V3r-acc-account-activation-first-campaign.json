@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-11-04T14:08:18.364Z",
-  "updatedAt": "2025-11-12T19:00:43.570Z",
+  "updatedAt": "2025-11-17T21:56:18.514Z",
   "id": "GacbtOdXGScd1V3r",
   "name": "[acc--account] Activation - First Campaign",
   "active": false,
@@ -411,39 +411,6 @@
         }
       }
     ],
-    "LIST ACCOUNTS": [
-      {
-        "json": {
-          "values": [
-            {
-              "accountId": "052349229671",
-              "createdBy": "henriqueoliveira@bluems.com",
-              "name": "henriqueoliveira@bluems.com's account",
-              "tags": [
-                "Main"
-              ],
-              "createdAt": "2025-11-04T19:48:30.720Z",
-              "owner": "goliveira@bluemarketing.com",
-              "creationMode": "enrollment",
-              "brn": "brn:bms:acc:global::account:052349229671"
-            },
-            {
-              "accountId": "405096703166",
-              "createdBy": "henriqueoliveira@bluems.com",
-              "name": "henriqueoliveira@bluems.com's account",
-              "tags": [
-                "Main"
-              ],
-              "createdAt": "2025-11-04T13:23:35.804Z",
-              "owner": "gakkari@bluemarketing.com",
-              "creationMode": "enrollment",
-              "brn": "brn:bms:acc:global::account:405096703166"
-            }
-          ],
-          "nextPageToken": null
-        }
-      }
-    ],
     "GET User - givenName + familyName + userLanguage": [
       {
         "json": {
@@ -477,7 +444,7 @@
       }
     ]
   },
-  "versionId": "269e39b0-82fb-49a4-bb97-0bca82a19403",
+  "versionId": "7a42dfb3-f6bb-446c-b8de-49cf65cf80d8",
   "triggerCount": 1,
   "shared": [
     {
