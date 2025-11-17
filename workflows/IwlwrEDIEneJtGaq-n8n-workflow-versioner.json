@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-11-11T19:43:26.929Z",
-  "updatedAt": "2025-11-17T22:22:02.526Z",
+  "updatedAt": "2025-11-17T22:22:25.207Z",
   "id": "IwlwrEDIEneJtGaq",
   "name": "n8n-workflow-versioner",
   "active": true,
@@ -39,8 +39,7 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 1
+              "field": "minutes"
             }
           ]
         }
@@ -326,7 +325,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "8409965e-aac9-4788-beac-ce6f27f1d6ae",
+  "versionId": "2eb64a89-5491-4606-aa4b-f50b019184ff",
   "triggerCount": 1,
   "shared": [
     {
