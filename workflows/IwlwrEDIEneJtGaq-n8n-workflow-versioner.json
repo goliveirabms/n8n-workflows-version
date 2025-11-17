@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-11-11T19:43:26.929Z",
-  "updatedAt": "2025-11-17T22:02:47.164Z",
+  "updatedAt": "2025-11-17T22:20:58.505Z",
   "id": "IwlwrEDIEneJtGaq",
   "name": "n8n-workflow-versioner",
   "active": false,
@@ -96,7 +96,7 @@
           "cachedResultName": "n8n-workflows-version",
           "cachedResultUrl": "https://github.com/goliveirabms/n8n-workflows-version"
         },
-        "filePath": "={{ $('Code in JavaScript').item.json.name }}",
+        "filePath": "={{ $('Code in JavaScript').item.json.filename }}",
         "fileContent": "={{ $('Code in JavaScript').item.json.contentString }}",
         "commitMessage": "=n8n auto-version: {{ $('Code in JavaScript').item.json.filename }}"
       },
@@ -167,11 +167,11 @@
           "conditions": [
             {
               "id": "e5e6d47f-9b44-472f-8724-d1b180e30ee0",
-              "leftValue": "={{ $json.id }}",
+              "leftValue": "={{ $json.error }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "exists",
+                "operation": "notExists",
                 "singleValue": true
               }
             }
@@ -206,9 +206,9 @@
           "cachedResultName": "n8n-workflows-version",
           "cachedResultUrl": "https://github.com/goliveirabms/n8n-workflows-version"
         },
-        "filePath": "={{ $json.filename }}",
-        "fileContent": "={{ $json.contentString }}",
-        "commitMessage": "=n8n auto-version: {{$json[\"filename\"]}}"
+        "filePath": "={{ $('Code in JavaScript').item.json.filename }}",
+        "fileContent": "={{ $('Code in JavaScript').item.json.contentString }}",
+        "commitMessage": "=n8n auto-version: Updated {{ $('Code in JavaScript').item.json.filename }} at {{$now}}\n"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -326,7 +326,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "61000bba-497b-4714-92ce-6e99d43d644a",
+  "versionId": "8409965e-aac9-4788-beac-ce6f27f1d6ae",
   "triggerCount": 1,
   "shared": [
     {
