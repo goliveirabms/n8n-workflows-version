@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-11-04T14:08:18.364Z",
-  "updatedAt": "2025-11-17T22:35:24.169Z",
+  "updatedAt": "2025-11-17T22:38:22.626Z",
   "id": "GacbtOdXGScd1V3r",
   "name": "[acc--account] Activation - First Campaign",
   "active": false,
@@ -292,19 +292,6 @@
       ],
       "id": "8c542995-ae78-4531-8026-e00fca2f0a1d",
       "name": "Function D-7"
-    },
-    {
-      "parameters": {
-        "content": "hello world"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1216,
-        -208
-      ],
-      "typeVersion": 1,
-      "id": "123caa8a-687e-43c3-b142-e16a96457093",
-      "name": "Sticky Note1"
     }
   ],
   "connections": {
@@ -457,7 +444,7 @@
       }
     ]
   },
-  "versionId": "3579613e-58d5-4175-89e5-21181ef4412c",
+  "versionId": "70794f2c-4d31-44ef-b73d-6a7dc14e7496",
   "triggerCount": 1,
   "shared": [
     {
