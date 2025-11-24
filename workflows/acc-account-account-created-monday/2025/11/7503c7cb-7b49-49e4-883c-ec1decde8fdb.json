@@ -1,0 +1,390 @@
+{
+  "createdAt": "2025-11-24T18:05:24.203Z",
+  "updatedAt": "2025-11-24T18:05:24.203Z",
+  "id": "PeYY8UfWXjVRr9XJ",
+  "name": "[acc--account] Account Created - Monday",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "mode": "list",
+          "cachedResultName": "dev--acc--account-changed-events--f4ub",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub"
+        },
+        "path": "c34d326c-78e5-4b4a-8af1-242be7584a03"
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -80
+      ],
+      "id": "4b222912-103c-4aed-8a38-bc90477c29d6",
+      "name": "AWS SNS Trigger",
+      "webhookId": "c34d326c-78e5-4b4a-8af1-242be7584a03",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "8b391f66-c7c6-4dad-b700-c74c507d95da",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $json.data.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "a2022bd1-5360-4ce5-8dc4-937c02de6453",
+      "name": "GET User = givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9df8a9ab-32fe-49da-8d73-17e9803a9aca"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0dba1e18-8c57-415b-84b9-526251b3b109",
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "b6efbac4-6211-410c-a9f2-7bbf4b9cf96f",
+      "name": "Condicional for Languague"
+    },
+    {
+      "parameters": {
+        "content": "## Envia um e-mail de boas vindas ao criar uma conta na BMS",
+        "height": 624,
+        "width": 1456,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -688,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "adb78864-2294-4e11-956c-7cbc3738209a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 9,
+        "receipients": "={{ $('Convert to JSON').item.json.data.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME= {{ $json.givenName }} {{ $json.familyName }} "
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -176
+      ],
+      "id": "224c0271-ab1d-48f8-ad15-67f7ff8e7335",
+      "name": "Send Email - Welcome to BMS (en-US)",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 14,
+        "receipients": "={{ $('Convert to JSON').item.json.data.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $('GET User = givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User = givenName + familyName + userLanguage').item.json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        512,
+        16
+      ],
+      "id": "4a4ad2e7-5f06-48b0-8747-6802da43481d",
+      "name": "Send Email - Welcome to BMS (pt-BR)",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8fe30053-ece5-4384-9bd0-57b25edd0ebf",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "com.bluems.acc.account-created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3e2090ab-d6a1-4e74-9729-ae564c391512",
+              "leftValue": "={{ $json.data.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "379b5087-689b-496c-8ef7-b87cb64c4ad9",
+      "name": "If type event is created en creationMode enrollment"
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "If type event is created en creationMode enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User = givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Condicional for Languague",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Condicional for Languague": {
+      "main": [
+        [
+          {
+            "node": "Send Email - Welcome to BMS (en-US)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email - Welcome to BMS (pt-BR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If type event is created en creationMode enrollment": {
+      "main": [
+        [
+          {
+            "node": "GET User = givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:AWS SNS Trigger": {}
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "b676cc45-276f-5ce2-9ae6-adc901c5b8a1",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"35ITae7AJwwuvaVIXJ9nqEqRrYi\",\"source\":\"com.bluems.acc.account\",\"type\":\"com.bluems.acc.account-created\",\"time\":\"2025-11-10T17:44:10.197Z\",\"combluemsaccountid\":\"194515064449\",\"data\":{\"accountId\":\"194515064449\",\"createdBy\":\"goliveira@bluemarketing.com\",\"name\":\"teste\",\"tags\":[],\"createdAt\":\"2025-11-10T17:44:09.949Z\",\"owner\":\"goliveira@bluemarketing.com\",\"creationMode\":\"member-account\",\"brn\":\"brn:bms:acc:global::account:194515064449\"}}",
+          "Timestamp": "2025-11-10T17:44:10.219Z",
+          "SignatureVersion": "1",
+          "Signature": "CAT8Q4VyLPt4rLGwDxsDmqMDN/pI9ztciRiiMgigPzH8xw/fqGp+m7s2ELlCNzDSuwk0LH1lktdpmGsj74oswSunDRo91d1i5MyzKZP2t8wOv74m7ZXCtuoAqIORV3W5r2lGBdXpm+aSQ7XN8R07y7C6CcRKV7GegXKZ+GBMucR8CRmZmMH5XLmSDa+3v0mvRR/L48THXxKz8v4NWc9I3Xx8NWw8ZK2/GnHhWAjUvqla84a0ARpXjhZPJNcGafgJOKoQ1Abw+GHhLskvA7JOYwTBWrZSRTktwymztRc3Dmuv0VQmbAOPBJiNZhS7vBErSBm2zhgELmq49LjSmCXbHg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub:6e1efdc4-4a0a-462c-acac-ff38faf91e74"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "35ITae7AJwwuvaVIXJ9nqEqRrYi",
+          "source": "com.bluems.acc.account",
+          "type": "com.bluems.acc.account-created",
+          "time": "2025-11-10T17:44:10.197Z",
+          "combluemsaccountid": "194515064449",
+          "data": {
+            "accountId": "194515064449",
+            "createdBy": "goliveira@bluemarketing.com",
+            "name": "teste",
+            "tags": [],
+            "createdAt": "2025-11-10T17:44:09.949Z",
+            "owner": "gakkari@bluemarketing.com",
+            "creationMode": "enrollment",
+            "brn": "brn:bms:acc:global::account:194515064449"
+          }
+        }
+      }
+    ],
+    "GET User = givenName + familyName + userLanguage": [
+      {
+        "json": {
+          "email": "gakkari@bluemarketing.com",
+          "givenName": "Giovanna",
+          "familyName": "Akkari",
+          "createdAt": "2025-11-04T19:51:12.583Z",
+          "modifiedAt": "2025-11-04T19:51:12.583Z",
+          "lastAccess": "2025-11-07T18:48:35.417Z",
+          "enabled": true,
+          "awsCognitoUserId": "fd14cca9-fdbd-4c61-85f8-f067593ac291",
+          "signedTermsVersion": "signup-terms-and-conditions-20240404.pdf",
+          "userLanguage": "pt",
+          "brn": "brn:bms:iam:global::user:goliveira@bluemarketing.com"
+        }
+      }
+    ]
+  },
+  "versionId": "7503c7cb-7b49-49e4-883c-ec1decde8fdb",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-24T18:05:24.203Z",
+      "updatedAt": "2025-11-24T18:05:24.203Z",
+      "role": "workflow:owner",
+      "workflowId": "PeYY8UfWXjVRr9XJ",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
