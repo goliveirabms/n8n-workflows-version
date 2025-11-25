@@ -1,0 +1,508 @@
+{
+  "createdAt": "2025-11-04T14:08:18.364Z",
+  "updatedAt": "2025-11-25T11:38:09.865Z",
+  "id": "GacbtOdXGScd1V3r",
+  "name": "[acc--account] Activation - First Campaign",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2144,
+        304
+      ],
+      "id": "2a1aeebe-f7cd-4da4-b338-5cf18c5e80b7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "values",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        304
+      ],
+      "id": "06806c56-d11b-4cae-b7da-a988fdd75582",
+      "name": "Split Out",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $('Split Out').item.json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -800,
+        288
+      ],
+      "id": "d9cec175-3978-4c86-a410-5eb8f5ee5e19",
+      "name": "GET User - givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "url": "http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters",
+              "value": "={\"createdAfter\":\"{{$json.createdAfter}}\",\"createdBefore\":\"{{$json.createdBefore}}\"}"
+            },
+            {
+              "name": "pageSize",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1728,
+        304
+      ],
+      "id": "a49268df-7646-498a-b2fd-1e82939aae94",
+      "name": "LIST ACCOUNTS"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.campaign.dsp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.accountId || $('LIST ACCOUNTS').item.json.accountId}}/campaigns",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1312,
+        304
+      ],
+      "id": "c47d5ae4-a0c4-4880-b5ac-dfa6156acb3b",
+      "name": "LIST CAMPAIGN - Verifiy if exist campaigns"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "745fbf43-a5fb-4835-85ee-0f9697478832",
+              "leftValue": "={{ $json.values }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9cfd0d1a-0a33-4d27-8011-23b70cab82c8",
+              "leftValue": "={{ $('Split Out').item.json.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1072,
+        304
+      ],
+      "id": "1bf60d3b-d6ff-4caa-97b5-a4cf138aa77d",
+      "name": "If does not contain campaigns and createMode is equal enrollment"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f9e74457-3309-4cf9-9b84-f28c265b3039"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "df12c731-f99c-45a7-8219-1011754d5e3f",
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 1
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -560,
+        288
+      ],
+      "id": "09a8ad73-5a58-4ff4-ac96-357aefe6dad6",
+      "name": "Switch - Verify language"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 20,
+        "receipients": "={{ $('Split Out').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $json.givenName }} {{ $json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        160
+      ],
+      "id": "3ad4a167-2256-4598-9bad-8dcdc684c73f",
+      "name": "Send Email - First Campaign - pt-BR",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 21,
+        "receipients": "={{ $('Split Out').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $json.givenName }} {{ $json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        384
+      ],
+      "id": "011573e3-c33f-49b6-a58a-3df07d227e3c",
+      "name": "Send Email - First Campaign - en-US",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Todos os dias as 9h, lista todas as contas criadas 7 dias atrás",
+        "height": 576,
+        "width": 592,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2176,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "2fe0b8fe-50ff-4937-8df3-3033dbb45578",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a data atual\nconst today = new Date();\n\n// Pega o dia anterior\nconst yesterday = new Date(today);\nyesterday.setDate(today.getDate() - 7);\n\n// Formata no padrão ISO e ajusta para início e fim do dia\nconst year = yesterday.getUTCFullYear();\nconst month = String(yesterday.getUTCMonth() + 1).padStart(2, '0');\nconst day = String(yesterday.getUTCDate()).padStart(2, '0');\n\nconst createdAfter = `${year}-${month}-${day}T00:00:00Z`;\nconst createdBefore = `${year}-${month}-${day}T23:59:59Z`;\n\n// Retorna para usar nos nodes seguintes\nreturn [{\n  json: {\n    createdAfter,\n    createdBefore\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1936,
+        304
+      ],
+      "id": "8c542995-ae78-4531-8026-e00fca2f0a1d",
+      "name": "Function D-7"
+    },
+    {
+      "parameters": {
+        "content": "Verifica se cada conta contém campanha, se não tiver segue o fluxo",
+        "height": 576,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1568,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "7fa6b4cb-3fa9-49d3-bd42-994669c33207",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Pegamos o nome e linguagem do usuário",
+        "height": 576,
+        "width": 256,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -912,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "fee7edae-82aa-42f1-9632-fe6f98219f45",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Dado a linguagem enviamos o email de acordo com os parametros personalizados",
+        "height": 576,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -640,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "ab648f80-13e6-4838-ab41-e5667560b09c",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Function D-7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "LIST CAMPAIGN - Verifiy if exist campaigns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User - givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Switch - Verify language",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST ACCOUNTS": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST CAMPAIGN - Verifiy if exist campaigns": {
+      "main": [
+        [
+          {
+            "node": "If does not contain campaigns and createMode is equal enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If does not contain campaigns and createMode is equal enrollment": {
+      "main": [
+        [
+          {
+            "node": "GET User - givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Verify language": {
+      "main": [
+        [
+          {
+            "node": "Send Email - First Campaign - pt-BR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email - First Campaign - en-US",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function D-7": {
+      "main": [
+        [
+          {
+            "node": "LIST ACCOUNTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Function D-7": [
+      {
+        "json": {
+          "createdAfter": "2025-11-03T00:00:00Z",
+          "createdBefore": "2025-11-11T23:59:59Z"
+        }
+      }
+    ],
+    "GET User - givenName + familyName + userLanguage": [
+      {
+        "json": {
+          "email": "goliveira@bluemarketing.com",
+          "givenName": "Gabriel",
+          "familyName": "Oliveira",
+          "createdAt": "2025-11-04T19:51:12.583Z",
+          "modifiedAt": "2025-11-04T19:51:12.583Z",
+          "lastAccess": "2025-11-07T18:48:35.417Z",
+          "enabled": true,
+          "awsCognitoUserId": "fd14cca9-fdbd-4c61-85f8-f067593ac291",
+          "signedTermsVersion": "signup-terms-and-conditions-20240404.pdf",
+          "userLanguage": "pt",
+          "brn": "brn:bms:iam:global::user:goliveira@bluemarketing.com"
+        }
+      },
+      {
+        "json": {
+          "email": "gakkari@bluemarketing.com",
+          "givenName": "Giovanna",
+          "familyName": "Akkari",
+          "createdAt": "2025-11-04T19:51:12.583Z",
+          "modifiedAt": "2025-11-04T19:51:12.583Z",
+          "lastAccess": "2025-11-07T18:48:35.417Z",
+          "enabled": true,
+          "awsCognitoUserId": "fd14cca9-fdbd-4c61-85f8-f067593ac291",
+          "signedTermsVersion": "signup-terms-and-conditions-20240404.pdf",
+          "userLanguage": "pt",
+          "brn": "brn:bms:iam:global::user:goliveira@bluemarketing.com"
+        }
+      }
+    ]
+  },
+  "versionId": "a20ab971-a7e0-4be4-8e61-feb26a9dea6e",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-04T14:08:18.364Z",
+      "updatedAt": "2025-11-04T14:08:18.364Z",
+      "role": "workflow:owner",
+      "workflowId": "GacbtOdXGScd1V3r",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
