@@ -1,0 +1,436 @@
+{
+  "createdAt": "2025-11-04T14:00:35.068Z",
+  "updatedAt": "2025-11-25T11:39:28.848Z",
+  "id": "ewOJPGO98p1N16n6",
+  "name": "[acc--account] Welcome Email",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "mode": "list",
+          "cachedResultName": "dev--acc--account-changed-events--f4ub",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -80
+      ],
+      "id": "c5e9dc7e-e64f-46f1-9e69-330a0a4b7549",
+      "name": "AWS SNS Trigger",
+      "webhookId": "4c159c27-dba5-4a7e-8133-6f7a63da593a",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "b6b4816f-a2a6-40e0-b10e-5061c0dd69b7",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $json.data.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "cb69c4cc-9055-4f00-adad-5ce6de327a97",
+      "name": "GET User = givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9df8a9ab-32fe-49da-8d73-17e9803a9aca"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0dba1e18-8c57-415b-84b9-526251b3b109",
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "f1ef3f86-5327-4375-a7b3-5d5c59c71333",
+      "name": "Condicional for Languague"
+    },
+    {
+      "parameters": {
+        "content": "Recebe evento de acc--account-changed e formata mensagem para JSON",
+        "height": 400,
+        "width": 432,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -688,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "010aa577-3746-4a14-af24-989141d3b88e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 9,
+        "receipients": "={{ $('Convert to JSON').item.json.data.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME= {{ $json.givenName }} {{ $json.familyName }} "
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -176
+      ],
+      "id": "9bf29515-1860-491d-a714-0b6354fe6e70",
+      "name": "Send Email - Welcome to BMS (en-US)",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 14,
+        "receipients": "={{ $('Convert to JSON').item.json.data.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $('GET User = givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User = givenName + familyName + userLanguage').item.json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        512,
+        16
+      ],
+      "id": "8e9eb0bf-66a9-46f1-836b-a62a022979d3",
+      "name": "Send Email - Welcome to BMS (pt-BR)",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8fe30053-ece5-4384-9bd0-57b25edd0ebf",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "com.bluems.acc.account-created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3e2090ab-d6a1-4e74-9729-ae564c391512",
+              "leftValue": "={{ $json.data.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "4c0c2c87-9471-4444-a1e2-e4c93f587e1c",
+      "name": "If type event is created en creationMode enrollment"
+    },
+    {
+      "parameters": {
+        "content": "Filtra para conter passar apenas eventos de created e com modo de criação igual a Enrollment",
+        "height": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -240,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "8716c59b-9510-4637-855a-3a15c18fd884",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Pegamos o nome e linguagem do usuário",
+        "height": 400,
+        "width": 192,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "d012e2e6-2e2b-432b-930e-6739d665d0c7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Dado a linguagem enviamos o email de acordo com os parametros personalizados",
+        "height": 400,
+        "width": 496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "5acd0695-4ccd-4bf9-943f-f35d88384536",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "If type event is created en creationMode enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User = givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Condicional for Languague",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Condicional for Languague": {
+      "main": [
+        [
+          {
+            "node": "Send Email - Welcome to BMS (en-US)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email - Welcome to BMS (pt-BR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If type event is created en creationMode enrollment": {
+      "main": [
+        [
+          {
+            "node": "GET User = givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:AWS SNS Trigger": {}
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "b676cc45-276f-5ce2-9ae6-adc901c5b8a1",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"35ITae7AJwwuvaVIXJ9nqEqRrYi\",\"source\":\"com.bluems.acc.account\",\"type\":\"com.bluems.acc.account-created\",\"time\":\"2025-11-10T17:44:10.197Z\",\"combluemsaccountid\":\"194515064449\",\"data\":{\"accountId\":\"194515064449\",\"createdBy\":\"goliveira@bluemarketing.com\",\"name\":\"teste\",\"tags\":[],\"createdAt\":\"2025-11-10T17:44:09.949Z\",\"owner\":\"goliveira@bluemarketing.com\",\"creationMode\":\"member-account\",\"brn\":\"brn:bms:acc:global::account:194515064449\"}}",
+          "Timestamp": "2025-11-10T17:44:10.219Z",
+          "SignatureVersion": "1",
+          "Signature": "CAT8Q4VyLPt4rLGwDxsDmqMDN/pI9ztciRiiMgigPzH8xw/fqGp+m7s2ELlCNzDSuwk0LH1lktdpmGsj74oswSunDRo91d1i5MyzKZP2t8wOv74m7ZXCtuoAqIORV3W5r2lGBdXpm+aSQ7XN8R07y7C6CcRKV7GegXKZ+GBMucR8CRmZmMH5XLmSDa+3v0mvRR/L48THXxKz8v4NWc9I3Xx8NWw8ZK2/GnHhWAjUvqla84a0ARpXjhZPJNcGafgJOKoQ1Abw+GHhLskvA7JOYwTBWrZSRTktwymztRc3Dmuv0VQmbAOPBJiNZhS7vBErSBm2zhgELmq49LjSmCXbHg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub:6e1efdc4-4a0a-462c-acac-ff38faf91e74"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "35ITae7AJwwuvaVIXJ9nqEqRrYi",
+          "source": "com.bluems.acc.account",
+          "type": "com.bluems.acc.account-created",
+          "time": "2025-11-10T17:44:10.197Z",
+          "combluemsaccountid": "194515064449",
+          "data": {
+            "accountId": "194515064449",
+            "createdBy": "goliveira@bluemarketing.com",
+            "name": "teste",
+            "tags": [],
+            "createdAt": "2025-11-10T17:44:09.949Z",
+            "owner": "gakkari@bluemarketing.com",
+            "creationMode": "enrollment",
+            "brn": "brn:bms:acc:global::account:194515064449"
+          }
+        }
+      }
+    ],
+    "GET User = givenName + familyName + userLanguage": [
+      {
+        "json": {
+          "email": "gakkari@bluemarketing.com",
+          "givenName": "Giovanna",
+          "familyName": "Akkari",
+          "createdAt": "2025-11-04T19:51:12.583Z",
+          "modifiedAt": "2025-11-04T19:51:12.583Z",
+          "lastAccess": "2025-11-07T18:48:35.417Z",
+          "enabled": true,
+          "awsCognitoUserId": "fd14cca9-fdbd-4c61-85f8-f067593ac291",
+          "signedTermsVersion": "signup-terms-and-conditions-20240404.pdf",
+          "userLanguage": "pt",
+          "brn": "brn:bms:iam:global::user:goliveira@bluemarketing.com"
+        }
+      }
+    ]
+  },
+  "versionId": "60a1d236-9d8e-47b8-93e0-3cc97678071b",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-04T14:00:35.068Z",
+      "updatedAt": "2025-11-04T14:00:35.068Z",
+      "role": "workflow:owner",
+      "workflowId": "ewOJPGO98p1N16n6",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
