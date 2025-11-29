@@ -1,0 +1,630 @@
+{
+  "createdAt": "2025-11-24T18:05:24.203Z",
+  "updatedAt": "2025-11-29T00:51:29.831Z",
+  "id": "PeYY8UfWXjVRr9XJ",
+  "name": "[acc--account] Account Created - Monday",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "mode": "list",
+          "cachedResultName": "dev--acc--account-changed-events--f4ub",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -80
+      ],
+      "id": "4b222912-103c-4aed-8a38-bc90477c29d6",
+      "name": "AWS SNS Trigger",
+      "webhookId": "c34d326c-78e5-4b4a-8af1-242be7584a03",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "8b391f66-c7c6-4dad-b700-c74c507d95da",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $json.data.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "a2022bd1-5360-4ce5-8dc4-937c02de6453",
+      "name": "GET User = givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "content": "## Cria item no Monday ao criar uma conta na BMS",
+        "height": 1056,
+        "width": 2192,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -736,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "adb78864-2294-4e11-956c-7cbc3738209a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8fe30053-ece5-4384-9bd0-57b25edd0ebf",
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "com.bluems.acc.account-created",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "3e2090ab-d6a1-4e74-9729-ae564c391512",
+              "leftValue": "={{ $json.data.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "379b5087-689b-496c-8ef7-b87cb64c4ad9",
+      "name": "If type event is created en creationMode enrollment"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "18390215665",
+        "groupId": "topics",
+        "name": "={{ \"Lead Orgânico \" + ($itemIndex + 1) + \" - \" +$('GET User = givenName + familyName + userLanguage').item.json.email}}",
+        "additionalFields": {
+          "columnValues": "={\n  \"deal_stage\": {\n    \"label\": \"Qualificado\"\n  },\n  \"text_mkw93y92\": \"{{ $('GET User = givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User = givenName + familyName + userLanguage').item.json.familyName }}\",\n  \"text_mkwpqa68\": \"{{ $('GET User = givenName + familyName + userLanguage').item.json.email }}\"\n}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -80
+      ],
+      "id": "083c192a-5d39-4c5c-817e-3a20f91e9d2b",
+      "name": "Create an Item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Filtra Tipo de Evento",
+        "height": 528,
+        "width": 224,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -224,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "b1d48628-af54-4550-8684-1855cc109780",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Recebe evento de acc--account-changed e formata para JSON",
+        "height": 528,
+        "width": 448,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -672,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "4209702e-ae37-4ca6-ad07-c5d43ce9db47",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Busca dados do usuário",
+        "height": 528,
+        "width": 224,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "560362cf-4f9b-4bfd-bf3e-adf6cea9c752",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Cria item no Monday no board de Onboarding",
+        "height": 528,
+        "width": 192,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "5d2fbdb4-fd6a-4d34-a515-97fae38fc4fc",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ed4b608-7061-4c50-8d6d-084f0a8c60ef",
+              "name": "itemDescription",
+              "value": "=Uma nova conta acabou de ser criada!\n\nNosso novo usuário se chama: {{ $('GET User = givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User = givenName + familyName + userLanguage').item.json.familyName }}\nE o e-mail cadastrado foi: {{ $('GET User = givenName + familyName + userLanguage').item.json.email }}\nData Cadastro: {{ $node['GET User = givenName + familyName + userLanguage'].json.createdAt.slice(0, 10).split('-').reverse().join('/') }}\nAccount ID: {{ $('If type event is created en creationMode enrollment').item.json.data.accountId }}\n\nConta Criada Por: {{ $('Convert to JSON').item.json.data.createdBy }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        928,
+        -80
+      ],
+      "id": "cb7ac7bb-48dc-4f35-a625-19df0d84fa8d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $('Create an Item').item.json.id }}",
+        "value": "={{ $node['Edit Fields'].json.itemDescription }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -80
+      ],
+      "id": "2bdfbf22-070a-4e9b-acd1-a1340627fa2e",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"query\": `query {\n      boards (ids: [18390215665]) {\n        items_page (query_params: {\n          rules: [{\n            column_id: \"text_mkwpqa68\",\n            compare_value: [\"${$json.email}\"]\n          }]\n        }) {\n          items {\n            id\n            column_values(ids: [\"deal_stage\"]) {\n              text\n            }\n          }\n        }\n      }\n    }`\n  }\n}}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        -80
+      ],
+      "id": "61ecc028-0365-4659-bb84-5cc375d6c681",
+      "name": "Busca e-mail Board Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $node[\"Busca e-mail Board Monday\"].json.data.boards[0].items_page.items[0].column_values[0].text }}",
+                    "rightValue": "Perdido",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a1ab6de1-1b7d-42c3-b438-cb34700c6a92"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7c26508d-2fcb-4b14-a1a2-7dc25fde8b22",
+                    "leftValue": "={{ $node[\"Busca e-mail Board Monday\"].json.data.boards[0].items_page.items[0].column_values[0].text }}",
+                    "rightValue": "Standby",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        704,
+        288
+      ],
+      "id": "149601d9-3412-4bf9-bbd8-198d1a30b72c",
+      "name": "Validação - Status do Item"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6db7e611-75e8-4b33-89e8-6abec63dab46",
+              "leftValue": "={{ $json.data.boards[0].items_page.items[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        -80
+      ],
+      "id": "f269c721-0bac-4732-8927-ee4be323b53e",
+      "name": "Filtro de e-mail",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $('Create an Item').item.json.id }}",
+        "value": "={{ $node['Edit Fields'].json.itemDescription }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        976,
+        400
+      ],
+      "id": "33e7cd0c-457b-4fdd-9978-637bdc307776",
+      "name": "Update - Em Negociação",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $('Create an Item').item.json.id }}",
+        "value": "={{ $node['Edit Fields'].json.itemDescription }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        976,
+        240
+      ],
+      "id": "a9cf0bb5-5c4a-433b-9081-d9ba7f9b2583",
+      "name": "Update - Perdido/Standby",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "If type event is created en creationMode enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User = givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If type event is created en creationMode enrollment": {
+      "main": [
+        [
+          {
+            "node": "GET User = givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an Item": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday": {
+      "main": [
+        [
+          {
+            "node": "Filtro de e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro de e-mail": {
+      "main": [
+        [
+          {
+            "node": "Create an Item",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Validação - Status do Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validação - Status do Item": {
+      "main": [
+        [
+          {
+            "node": "Update - Perdido/Standby",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update - Perdido/Standby",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update - Em Negociação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:AWS SNS Trigger": {}
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "b676cc45-276f-5ce2-9ae6-adc901c5b8a1",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"35ITae7AJwwuvaVIXJ9nqEqRrYi\",\"source\":\"com.bluems.acc.account\",\"type\":\"com.bluems.acc.account-created\",\"time\":\"2025-11-10T17:44:10.197Z\",\"combluemsaccountid\":\"194515064449\",\"data\":{\"accountId\":\"194515064449\",\"createdBy\":\"goliveira@bluemarketing.com\",\"name\":\"teste\",\"tags\":[],\"createdAt\":\"2025-11-10T17:44:09.949Z\",\"owner\":\"goliveira@bluemarketing.com\",\"creationMode\":\"member-account\",\"brn\":\"brn:bms:acc:global::account:194515064449\"}}",
+          "Timestamp": "2025-11-10T17:44:10.219Z",
+          "SignatureVersion": "1",
+          "Signature": "CAT8Q4VyLPt4rLGwDxsDmqMDN/pI9ztciRiiMgigPzH8xw/fqGp+m7s2ELlCNzDSuwk0LH1lktdpmGsj74oswSunDRo91d1i5MyzKZP2t8wOv74m7ZXCtuoAqIORV3W5r2lGBdXpm+aSQ7XN8R07y7C6CcRKV7GegXKZ+GBMucR8CRmZmMH5XLmSDa+3v0mvRR/L48THXxKz8v4NWc9I3Xx8NWw8ZK2/GnHhWAjUvqla84a0ARpXjhZPJNcGafgJOKoQ1Abw+GHhLskvA7JOYwTBWrZSRTktwymztRc3Dmuv0VQmbAOPBJiNZhS7vBErSBm2zhgELmq49LjSmCXbHg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub:6e1efdc4-4a0a-462c-acac-ff38faf91e74"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "35ITae7AJwwuvaVIXJ9nqEqRrYi",
+          "source": "com.bluems.acc.account",
+          "type": "com.bluems.acc.account-created",
+          "time": "2025-11-10T17:44:10.197Z",
+          "combluemsaccountid": "194515064449",
+          "data": {
+            "accountId": "194515064449",
+            "createdBy": "goliveira@bluemarketing.com",
+            "name": "teste",
+            "tags": [],
+            "createdAt": "2025-11-10T17:44:09.949Z",
+            "owner": "gakkari@bluemarketing.com",
+            "creationMode": "enrollment",
+            "brn": "brn:bms:acc:global::account:194515064449"
+          }
+        }
+      }
+    ],
+    "GET User = givenName + familyName + userLanguage": [
+      {
+        "json": {
+          "event": "customer-account-created",
+          "email": "gakkari@bluemarketing.com",
+          "givenName": "Giovanna",
+          "familyName": "Akkari",
+          "createdAt": "2025-11-04T19:51:12.583Z",
+          "modifiedAt": "2025-11-04T19:51:12.583Z",
+          "lastAccess": "2025-11-07T18:48:35.417Z",
+          "enabled": true,
+          "awsCognitoUserId": "fd14cca9-fdbd-4c61-85f8-f067593ac291",
+          "signedTermsVersion": "signup-terms-and-conditions-20240404.pdf",
+          "userLanguage": "pt",
+          "brn": "brn:bms:iam:global::user:goliveira@bluemarketing.com"
+        }
+      }
+    ]
+  },
+  "versionId": "c1e7b315-be9d-4494-84aa-f211a738ef06",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-24T18:05:24.203Z",
+      "updatedAt": "2025-11-24T18:05:24.203Z",
+      "role": "workflow:owner",
+      "workflowId": "PeYY8UfWXjVRr9XJ",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
