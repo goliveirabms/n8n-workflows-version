@@ -1,0 +1,358 @@
+{
+  "createdAt": "2025-11-29T15:23:47.792Z",
+  "updatedAt": "2025-11-29T20:58:44.902Z",
+  "id": "Sro2fUKv0FdugW54",
+  "name": "[monday] Update Welcome e-mail",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "b612a6c6-f1b1-4e3a-aff1-513ad416f0d6",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        512,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"query\": `query {\n      boards (ids: [18390215665]) {\n        items_page (query_params: {\n          rules: [{\n            column_id: \"text_mkwpqa68\",\n            compare_value: [\"${$json.email}\"]\n          }]\n        }) {\n          items {\n            id\n            column_values(ids: [\"deal_stage\"]) {\n              text\n            }\n          }\n        }\n      }\n    }`\n  }\n}}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        -176
+      ],
+      "id": "3f36c884-243f-465f-b885-18d726da45e9",
+      "name": "Busca e-mail Board Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $json.data.boards[0].items_page.items[0].id }}",
+        "value": "=E-mail de boas vindas enviado com sucesso!\n\nE-mail de destino: {{ $('Start').item.json.email }}\nIdioma: {{ $('Start').item.json.language }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -272
+      ],
+      "id": "4aaddeab-7730-4d6e-aec9-74e8ea43042b",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4eea919e-a731-4f76-a542-6147f426f950",
+              "name": "retryCount",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        -176
+      ],
+      "id": "71dfb177-1053-46ba-a944-e5cb1597fd48",
+      "name": "Config Loop"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "868c4b15-3744-4e34-8ec5-d4ad32eb1038",
+              "leftValue": "={{ $json.data.boards[0].items_page.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        -176
+      ],
+      "id": "dcab5197-57fd-4cc4-8f14-bd1c172671cc",
+      "name": "Achou o Item?"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1504,
+        -128
+      ],
+      "id": "52f9a456-a38c-4972-9b9b-aea1535cebd2",
+      "name": "Wait",
+      "webhookId": "b7e0014f-b141-45a4-ba43-78d4e8ee5d05"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "345c7abe-ed7f-4e76-be03-dc28d1c11e62",
+              "leftValue": "={{ $json.retryCount }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        -64
+      ],
+      "id": "42ff6696-754e-4c76-89ca-0eec9e53d2c6",
+      "name": "Recorrência"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5b07bd8-4fb9-4cac-908a-d96d9c837a00",
+              "name": "retryCount",
+              "value": "={{ $json.retryCount + 1 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1904,
+        0
+      ],
+      "id": "0daaf7eb-0eba-47b8-8199-4eb940c673ad",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1504,
+        16
+      ],
+      "id": "d6e721e8-5345-484d-8ac5-95579c4c4a85",
+      "name": "Send a message",
+      "webhookId": "4261914e-6fa1-4fe1-90f4-5947616fcf64",
+      "credentials": {
+        "slackApi": {
+          "id": "uSy4DZ7eURyYGk8a",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Config Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday": {
+      "main": [
+        [
+          {
+            "node": "Achou o Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config Loop": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Achou o Item?": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recorrência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recorrência": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "email": "gakkari@bluemarketing.com",
+          "fullName": "Giovanna Akkari",
+          "firstName": "Giovanna",
+          "lastName": "Akkari",
+          "registrationDate": "2025-11-04T19:51:12.583Z",
+          "language": "pt",
+          "accountId": "194515064449",
+          "createdBy": "goliveira@bluemarketing.com",
+          "emailSentDate": "2025-11-29T15:30:09.012-03:00"
+        }
+      }
+    ]
+  },
+  "versionId": "b14f91da-6c2b-4980-90f9-f337c1c1dfdb",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-29T15:23:47.792Z",
+      "updatedAt": "2025-11-29T15:23:47.792Z",
+      "role": "workflow:owner",
+      "workflowId": "Sro2fUKv0FdugW54",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
