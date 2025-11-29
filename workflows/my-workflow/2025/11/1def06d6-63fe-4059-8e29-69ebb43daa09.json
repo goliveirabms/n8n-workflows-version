@@ -1,0 +1,75 @@
+{
+  "createdAt": "2025-11-28T11:29:11.085Z",
+  "updatedAt": "2025-11-29T20:28:13.790Z",
+  "id": "I3fhjaKoJoTjfekh",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7dbbaf72-9019-49fd-87db-88c0707a885d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "boardColumn",
+        "operation": "getAll",
+        "boardId": "18390215665"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ca767cfe-04ad-471e-90c6-fb60fa92ff12",
+      "name": "Get many board columns",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many board columns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1def06d6-63fe-4059-8e29-69ebb43daa09",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-28T11:29:11.085Z",
+      "updatedAt": "2025-11-28T11:29:11.085Z",
+      "role": "workflow:owner",
+      "workflowId": "I3fhjaKoJoTjfekh",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
