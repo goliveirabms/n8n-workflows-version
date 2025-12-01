@@ -1,0 +1,994 @@
+{
+  "createdAt": "2025-11-04T13:47:56.649Z",
+  "updatedAt": "2025-12-01T20:34:18.378Z",
+  "id": "3Q4KUhBcScUMlcf7",
+  "name": "[email] Quota",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('GET USER (givenName + familyName + userLanguage)').item.json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "37e7da63-4fab-4984-b420-50740d708725"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7911db91-2b26-43ac-813a-f52b6bd064f3",
+                    "leftValue": "={{ $('GET USER (givenName + familyName + userLanguage)').item.json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        576,
+        576
+      ],
+      "id": "f4cfe2e8-061a-40b6-91b2-a52ea5ad5b24",
+      "name": "Idioma Approved"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('GET USER (givenName + familyName + userLanguage)').item.json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9556156e-a5ae-473d-914c-04fa50a98e20"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "55475e66-0f23-4a0e-8324-9460a39bacbf",
+                    "leftValue": "={{ $('GET USER (givenName + familyName + userLanguage)').item.json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        576,
+        960
+      ],
+      "id": "4609e8ce-6ec1-4342-9603-b8695b3fa603",
+      "name": "Idioma Rejected"
+    },
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "mode": "list",
+          "cachedResultName": "dev--acc--quota-increase-request-changed-events--z9pb",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        672
+      ],
+      "id": "5c0976c9-5d28-4982-afdd-528dded95d72",
+      "name": "AWS SNS Trigger",
+      "webhookId": "91eea7e1-0853-433e-994b-ba42130b9d04",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1296,
+        672
+      ],
+      "id": "5c97fd56-d6d2-4e64-9c20-5097b01f16c2",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 18,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('GET Quota (Quota Name)').item.json.name }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        288
+      ],
+      "id": "88021109-0b3f-43d1-abc0-0352cdda4798",
+      "name": "Envio Pending - pt-BR",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 10,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('GET Quota (Quota Name)').item.json.name }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        480
+      ],
+      "id": "cd24c858-fe09-48c7-a083-69523aa2fc94",
+      "name": "Envio Approved en-US",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 12,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('GET Quota (Quota Name)').item.json.name }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        672
+      ],
+      "id": "bf481b24-f11f-441e-97a8-56fd66a655dd",
+      "name": "Envio Approved pt-BR",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 11,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('GET Quota (Quota Name)').item.json.name }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        864
+      ],
+      "id": "a38506ac-bcf8-4d9a-bb7d-4bcf8fd1572a",
+      "name": "Envio Rejected en-US",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 13,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('Tradução do nome da Quota').item.json.name_pt }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        1056
+      ],
+      "id": "6919e8f4-4bdf-4fa8-a6a8-f0ac18bbe733",
+      "name": "Envio Rejected pt-BR",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b04cdfdd-c40b-4fe2-84ec-f9cd8bc36432",
+                    "leftValue": "={{ $('Convert to JSON').item.json.data.status }}",
+                    "rightValue": "pending",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pending"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Convert to JSON').item.json.data.status }}",
+                    "rightValue": "approved",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3b50c949-0844-449d-975f-9fd341982e35"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Approved"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "51faccfc-338e-4f4d-9fac-f720b2aede29",
+                    "leftValue": "={{ $('Convert to JSON').item.json.data.status }}",
+                    "rightValue": "rejected",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rejected"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        48,
+        656
+      ],
+      "id": "37527d46-64ce-4c13-bcf1-eab76e197bd3",
+      "name": "SWITCH - PENDING/APPROVED / REJECTED"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://api.notification.mon.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('GET Account (owner)').item.json.accountId }}/notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {\n    \"en\": \"Limit increase request received\",\n    \"pt\": \"Solicitação de aumento de limite recebida\",\n    \"es\": \"Solicitud de aumento de límite recibida\"\n  },\n  \"detail\": {\n    \"en\": \"We received a request for a limit increase for the Limit {{ $('GET Quota (Quota Name)').item.json.name }}. The requested change is from {{ $('GET Quota (Quota Name)').item.json.current }} to {{ $('Convert to JSON').item.json.data.value }}. We are processing your request and you will be notified of the status.\",\n    \"pt\": \"Recebemos uma solicitação para aumento do Limite {{ $('GET Quota (Quota Name)').item.json.name }}. A alteração solicitada é de {{ $('GET Quota (Quota Name)').item.json.current }} para {{ $('Convert to JSON').item.json.data.value }}. Estamos processando sua solicitação e você será notificado sobre o status.\",\n    \"es\": \"Hemos recibido una solicitud para aumentar el límite de la Cuota {{ $('GET Quota (Quota Name)').item.json.name }}. El cambio solicitado es de {{ $('GET Quota (Quota Name)').item.json.current }} a {{ $('Convert to JSON').item.json.data.value }}. Estamos procesando su solicitud y se le informará sobre el estado.\"\n  },\n  \"severity\": \"low\",\n  \"type\": \"http://example.com/problems/limit-extension\",\n  \"documentationUrl\": \"http://example.com/docs/limit-extension\",\n  \"relatedResources\": [],\n  \"deduplicationId\": \"c9011fbc87187123ab7e9325f99e12aa\",\n  \"deduplicationWindowSeconds\": 5,\n  \"templateArgs\": {\n    \"AccountName\": \"Cliente\",\n    \"quota_id\": \"REQ-12345\",\n    \"account_id\": \"ACC-9876\"\n  },\n  \"source\": \"com.bluems.cs2.limits\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        384
+      ],
+      "id": "b91f9a79-4862-41b3-bc17-69383e1b636a",
+      "name": "Notification Pending"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "42deab6b-5523-42b5-a7d4-e208be05f5fd"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "65050719-ce5b-4905-9d75-b85cd041ae6a",
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        576,
+        192
+      ],
+      "id": "76d97d7e-076d-4eff-a01f-77884a47c536",
+      "name": "Idioma Pending"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://api.notification.mon.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('GET Account (owner)').item.json.accountId }}/notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {\n    \"en\": \"Limit Increase Request Approved! 🎉\",\n    \"pt\": \"Solicitação de Aumento de Limite Aprovada! 🎉\",\n    \"es\": \"¡Solicitud de Aumento de Límite Aprobada! 🎉\"\n  },\n  \"detail\": {\n    \"en\": \"Great news! Your limit increase request for the limit {{ $('GET Quota (Quota Name)').item.json.name }} has been APPROVED. The new limit is now {{ $('Convert to JSON').item.json.data.value }}.\",\n    \"pt\": \"Excelente! Sua solicitação de aumento para o limite {{ $('GET Quota (Quota Name)').item.json.name }} foi APROVADA. O novo limite em vigor é de {{ $('Convert to JSON').item.json.data.value }}.\",\n    \"es\": \"¡Buenas noticias! Su solicitud de aumento para la cuota {{ $('GET Quota (Quota Name)').item.json.name }} ha sido APROBADA. El nuevo límite en vigor es de {{ $('Convert to JSON').item.json.data.value }}.\"\n  },\n  \"severity\": \"low\",\n  \"type\": \"http://example.com/problems/limit-extension-approved\",\n  \"documentationUrl\": \"http://example.com/docs/limit-extension-approved\",\n  \"relatedResources\": [],\n  \"deduplicationId\": \"c9011fbc87187123ab7e9325f99e12aa\",\n  \"deduplicationWindowSeconds\": 5,\n  \"templateArgs\": {\n    \"AccountName\": \"Cliente\",\n    \"quota_id\": \"REQ-12345\",\n    \"account_id\": \"ACC-9876\"\n  },\n  \"source\": \"com.bluems.cs2.limits\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        768
+      ],
+      "id": "f1a2912e-8ebe-4673-8039-b985266e4133",
+      "name": "Notification Approved"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://api.notification.mon.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('GET Account (owner)').item.json.accountId }}/notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {\n    \"en\": \"Limit Increase Request Rejected\",\n    \"pt\": \"Solicitação de Aumento de Limite Rejeitada\",\n    \"es\": \"Solicitud de Aumento de Límite Rechazada\"\n  },\n  \"detail\": {\n    \"en\": \"Your request to increase the limit {{ $('GET Quota (Quota Name)').item.json.name }} has been REJECTED. For details, please contact our support team: support@bluems.com\",\n    \"pt\": \"Sua solicitação de aumento para o limite {{ $('Tradução do nome da Quota').item.json.name_pt }} foi REJEITADA. Para mais detalhes, entre em contato com nosso suporte: support@bluems.com\",\n    \"es\": \"Su solicitud de aumento para la cuota {{ $('GET Quota (Quota Name)').item.json.name }} ha sido RECHAZADA. Para obtener más detalles, póngase en contacto con nuestro soporte: support@bluems.com\"\n  },\n  \"severity\": \"high\",\n  \"type\": \"http://example.com/problems/limit-extension-rejected\",\n  \"documentationUrl\": \"http://example.com/docs/limit-extension-rejected\",\n  \"relatedResources\": [],\n  \"deduplicationId\": \"c9011fbc87187123ab7e9325f99e12aa\",\n  \"deduplicationWindowSeconds\": 5,\n  \"templateArgs\": {\n    \"AccountName\": \"Cliente\",\n    \"quota_id\": \"REQ-12345\",\n    \"account_id\": \"ACC-9876\"\n  },\n  \"source\": \"com.bluems.cs2.limits\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        1152
+      ],
+      "id": "677607a0-0f0d-41c5-95b0-5236b7c9734b",
+      "name": "Notification Rejected"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 19,
+        "receipients": "={{ $('GET Account (owner)').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=ACCOUNTID={{ $('Convert to JSON').item.json.data.accountId }},USERNAME= {{ $('GET USER (givenName + familyName + userLanguage)').item.json.givenName }} {{ $('GET USER (givenName + familyName + userLanguage)').item.json.familyName }},QUOTANAME= {{ $('GET Quota (Quota Name)').item.json.name }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        800,
+        96
+      ],
+      "id": "08b0d780-0769-42c1-ae65-262fd5dd790d",
+      "name": "Envio Pending - en-US",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Recebe evento de acc--account-changed e formata para JSON",
+        "height": 272,
+        "width": 448,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1584,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "274cec65-175c-4717-a8ff-4add43f364f5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.quota.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.data.accountId }}/quotas/{{ $json.data.quotaId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1072,
+        672
+      ],
+      "id": "41f37584-91b2-4a02-8d2a-7f84a85d473c",
+      "name": "GET Quota (Quota Name)"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('Convert to JSON').item.json.data.accountId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -624,
+        672
+      ],
+      "id": "995ad004-357c-47e1-9a82-11b30c10383c",
+      "name": "GET Account (owner)"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        672
+      ],
+      "id": "dcf226a9-feca-406b-b718-67c3855466b3",
+      "name": "GET USER (givenName + familyName + userLanguage)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "61c41622-8cb8-4e6e-83ab-f2b4a98029ae",
+              "leftValue": "={{ $json.owner }}",
+              "rightValue": "john.doe@example.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        672
+      ],
+      "id": "6336c681-af17-485b-82d7-f5b4943aaf43",
+      "name": "Removendo john.doe@example.com"
+    },
+    {
+      "parameters": {
+        "content": "## Pega o nome da quota e o email dono da conta",
+        "height": 272,
+        "width": 624,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1112,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "dcd8b890-9925-4427-8ca0-c23bca118ead",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Remove contas criadas pelo teste e2e e pega o nome e linguagem do usuário",
+        "height": 272,
+        "width": 416,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "2df0ff82-2c64-4959-b297-3755779d2d42",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Verifica o tipo de solicitação da quota",
+        "height": 304,
+        "width": 288,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "7b5644b9-10bf-48ce-b394-a1193d106121",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Dado a linguagem enviamos o email de acordo com os parametros personalizados",
+        "height": 1312,
+        "width": 640,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        416,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "e1984ee5-a8ff-4da4-bda5-65cb3b1ef39c",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mapeamento de traduções\nconst translations = {\n  'Daily Budget Limit': 'Limite de Orçamento Diário',\n  'Campaign Limit': 'Limite de Campanhas',\n  'Enabled Campaign Limit': 'Limite de Campanhas Ativas',\n  'Campaign Ads Limit': 'Limite de Anúncios por Campanha',\n  'API Key Limit': 'Limite de Chaves API',\n  'API Key Access Code Limit': 'Limite de Códigos de Acesso por Chave API',\n  'Public Blueprint Limit': 'Limite de Blueprints Públicos',\n  'Blueprint Limit': 'Limite de Blueprints',\n  'Media Storage Limit': 'Limite de Armazenamento de Mídia',\n  'Organization Account Limit': 'Limite de Contas da Organização',\n  'Organization Limit': 'Limite de Organizações',\n  'Tracker Limit': 'Limite de Rastreadores'\n};\n\n// Processar cada item do array\nfor (const item of $input.all()) {\n  // Traduz o campo name diretamente\n  if (item.json.name) {\n    item.json.name_pt = translations[item.json.name] || item.json.name;\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -848,
+        672
+      ],
+      "id": "219b07c5-a300-4a4f-9056-b4bdef565497",
+      "name": "Tradução do nome da Quota"
+    }
+  ],
+  "connections": {
+    "Idioma Approved": {
+      "main": [
+        [
+          {
+            "node": "Envio Approved en-US",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio Approved pt-BR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Idioma Rejected": {
+      "main": [
+        [
+          {
+            "node": "Envio Rejected en-US",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio Rejected pt-BR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "GET Quota (Quota Name)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SWITCH - PENDING/APPROVED / REJECTED": {
+      "main": [
+        [
+          {
+            "node": "Idioma Pending",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notification Pending",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Idioma Approved",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notification Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Idioma Rejected",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notification Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Idioma Pending": {
+      "main": [
+        [
+          {
+            "node": "Envio Pending - en-US",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio Pending - pt-BR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Quota (Quota Name)": {
+      "main": [
+        [
+          {
+            "node": "Tradução do nome da Quota",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Account (owner)": {
+      "main": [
+        [
+          {
+            "node": "Removendo john.doe@example.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET USER (givenName + familyName + userLanguage)": {
+      "main": [
+        [
+          {
+            "node": "SWITCH - PENDING/APPROVED / REJECTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Removendo john.doe@example.com": {
+      "main": [
+        [
+          {
+            "node": "GET USER (givenName + familyName + userLanguage)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tradução do nome da Quota": {
+      "main": [
+        [
+          {
+            "node": "GET Account (owner)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:AWS SNS Trigger": {
+      "webhookId": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:928e2b14-4f30-420b-8298-93f89b22602a"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "d762b9cf-19e3-5a71-82c7-d86e7cefc7d7",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"361zTtxBkbLUOqpS1mL0T5IRQbC\",\"source\":\"com.bluems.acc.quota\",\"type\":\"com.bluems.acc.quota-increase-request-created\",\"time\":\"2025-11-26T20:27:56.345Z\",\"combluemsaccountid\":\"930089676635\",\"data\":{\"quotaIncreaseRequestId\":\"361zTOsvvs8iGC5k2GEVNmSTYsz\",\"accountId\":\"930089676635\",\"quotaId\":\"dsp--campaign--campaign-limit\",\"response\":null,\"status\":\"pending\",\"value\":20,\"reason\":\"TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste\",\"createdAt\":\"2025-11-26T20:27:52.970Z\",\"updatedAt\":\"2025-11-26T20:27:52.970Z\"}}",
+          "Timestamp": "2025-11-26T20:27:56.378Z",
+          "SignatureVersion": "1",
+          "Signature": "MY9UQyIhy9d15u4axTdlB2iFmKuYQvHPU02t33d52fJLwsZ8Az+uNWAHO0FGtOrtYFOAnvxbBtkzc1yna61nPgwMyKXFWfJrZ5X01nT730G9ahwkXcT2NFRnDu/uM/J9iDHObyMbVIUbTzSXxVhz11nv3d4/9YL498qWAwTg7uxdZF96k+AbFT2FnIWG6mxwu20JqF86LlXW1jQeYo/2dEaxtkEh4QdR756QjDj0YA6s52PgmxZksVN8hnXtgxOljkTsVriqNRd2yWG1n4fuJzinm1auR72lS2p6zZGJRnu225GHg/8tQ7RB8Lw0qdWLXEiHbLLyW5IQ0/gaeRQNGg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:ad9d962f-4db9-4b8e-9bf4-477467d61cb7"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "361zTtxBkbLUOqpS1mL0T5IRQbC",
+          "source": "com.bluems.acc.quota",
+          "type": "com.bluems.acc.quota-increase-request-created",
+          "time": "2025-11-26T20:27:56.345Z",
+          "combluemsaccountid": "930089676635",
+          "data": {
+            "quotaIncreaseRequestId": "361zTOsvvs8iGC5k2GEVNmSTYsz",
+            "accountId": "930089676635",
+            "quotaId": "dsp--campaign--campaign-limit",
+            "response": null,
+            "status": "rejected",
+            "value": 20,
+            "reason": "TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste",
+            "createdAt": "2025-11-26T20:27:52.970Z",
+            "updatedAt": "2025-11-26T20:27:52.970Z"
+          }
+        }
+      }
+    ],
+    "GET Quota (Quota Name)": [
+      {
+        "json": {
+          "quotaId": "dsp--campaign--campaign-limit",
+          "name": "Daily Budget Limit",
+          "description": "Indicates how many campaigns can be created.",
+          "max": 100,
+          "unit": "campaigns",
+          "adjustable": true,
+          "productId": "dsp",
+          "serviceId": "campaign",
+          "current": 21,
+          "default": 10,
+          "accountId": "930089676635"
+        }
+      }
+    ]
+  },
+  "versionId": "a3ef262a-6896-455e-97ab-97a04d7b3250",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-04T13:47:56.649Z",
+      "updatedAt": "2025-11-04T13:47:56.649Z",
+      "role": "workflow:owner",
+      "workflowId": "3Q4KUhBcScUMlcf7",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
