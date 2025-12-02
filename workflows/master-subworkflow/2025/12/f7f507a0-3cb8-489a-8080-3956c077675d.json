@@ -1,0 +1,416 @@
+{
+  "createdAt": "2025-11-30T15:15:47.930Z",
+  "updatedAt": "2025-12-01T22:35:54.464Z",
+  "id": "gJq377jETDjMTtgB",
+  "name": "Master Subworkflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "D08L5PL5RGT",
+          "mode": "id"
+        },
+        "text": "Teste N8N",
+        "otherOptions": {
+          "includeLinkToWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        816,
+        -280
+      ],
+      "id": "b9f612c9-2913-4373-8330-7a4ac3fb83d1",
+      "name": "Send a message",
+      "webhookId": "4412de38-1bd7-4742-b867-9790de6b41d5",
+      "credentials": {
+        "slackApi": {
+          "id": "uSy4DZ7eURyYGk8a",
+          "name": "Slack account - CliQ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "b6e22aa6-3f0c-4f8d-84c9-4641088deaf1",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        592,
+        -184
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $json.data.boards[0].items_page.items[0].id }}",
+        "value": "=E-mail de boas vindas enviado com sucesso!\n\nE-mail de destino: {{ $('Start').item.json.email }}\nIdioma: {{ $('Start').item.json.language }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        -352
+      ],
+      "id": "273018b1-d95d-49d1-b8ed-6ce0f09bbd76",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "868c4b15-3744-4e34-8ec5-d4ad32eb1038",
+              "leftValue": "={{ $json.data.boards[0].items_page.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -160
+      ],
+      "id": "fad44e93-8478-45be-b4a8-535530c918be",
+      "name": "Achou o Item?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1488,
+        -160
+      ],
+      "id": "5dfbfd92-0783-44f7-a68e-c03cf5c7222b",
+      "name": "Wait",
+      "webhookId": "b7e0014f-b141-45a4-ba43-78d4e8ee5d05"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "345c7abe-ed7f-4e76-be03-dc28d1c11e62",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        -64
+      ],
+      "id": "24104260-37b9-47d8-8d3f-af435e208caa",
+      "name": "Recorrência"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        8
+      ],
+      "id": "854a6a5e-f85c-4c50-ad08-de49d931b991",
+      "name": "Compilador de Dados"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"query\": `query {\n      boards (ids: [18390215665]) {\n        items_page (query_params: {\n          rules: [{\n            column_id: \"text_mkwpqa68\",\n            compare_value: [\"${$node[\"Start\"].json.email}\"]\n          }]\n        }) {\n          items {\n            id\n            column_values(ids: [\"deal_stage\"]) {\n              text\n            }\n          }\n        }\n      }\n    }`\n  }\n}}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        816,
+        -88
+      ],
+      "id": "06965508-da9f-42dd-84bf-8b3958d71e5d",
+      "name": "Busca e-mail Board Monday1",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "D08L5PL5RGT",
+          "mode": "id"
+        },
+        "text": "TESTE KESLLEY - FLUXO N8N - [ERRO AO ATUALIZAR ITEM NO MONDAY]",
+        "otherOptions": {
+          "includeLinkToWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1488,
+        32
+      ],
+      "id": "89dd34f5-19da-485e-8b12-c395291c2966",
+      "name": "Send a message1",
+      "webhookId": "4261914e-6fa1-4fe1-90f4-5947616fcf64",
+      "retryOnFail": false,
+      "credentials": {
+        "slackApi": {
+          "id": "70YvF30wUadRU4zb",
+          "name": "Slack account - BMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3905b2ac-e76b-43b5-a84d-515a59456cf0",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        -352
+      ],
+      "id": "578ed6c1-32c2-4e67-b1a0-7ee4d0ce0a0d",
+      "name": "Precisa Mudar Status?"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "changeColumnValue"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        -352
+      ],
+      "id": "b557ccd0-abce-40ba-a070-888cdfacf681",
+      "name": "Change a column value for a board item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Busca e-mail Board Monday1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Achou o Item?": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recorrência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Compilador de Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recorrência": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compilador de Dados": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday1": {
+      "main": [
+        [
+          {
+            "node": "Achou o Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add an update to an item": {
+      "main": [
+        [
+          {
+            "node": "Precisa Mudar Status?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Precisa Mudar Status?": {
+      "main": [
+        [
+          {
+            "node": "Change a column value for a board item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f7f507a0-3cb8-489a-8080-3956c077675d",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-11-30T15:15:47.930Z",
+      "updatedAt": "2025-11-30T15:15:47.930Z",
+      "role": "workflow:owner",
+      "workflowId": "gJq377jETDjMTtgB",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
