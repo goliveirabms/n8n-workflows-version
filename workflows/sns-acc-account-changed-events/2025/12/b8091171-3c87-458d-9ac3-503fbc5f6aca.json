@@ -1,0 +1,118 @@
+{
+  "createdAt": "2025-12-05T17:44:35.257Z",
+  "updatedAt": "2025-12-05T17:46:19.377Z",
+  "id": "i3B2tsWqkw6GMwRo",
+  "name": "sns--acc--account-changed-events",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "mode": "list",
+          "cachedResultName": "dev--acc--account-changed-events--f4ub",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        64
+      ],
+      "id": "f1ffed04-3ac8-46bb-9c67-5f20fdf6c43b",
+      "name": "AWS SNS Trigger",
+      "webhookId": "4c159c27-dba5-4a7e-8133-6f7a63da593a",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        64
+      ],
+      "id": "ad4d900f-187f-4ca8-a7c0-8d3897f63d2a",
+      "name": "Convert to JSON"
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "b676cc45-276f-5ce2-9ae6-adc901c5b8a1",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"35ITae7AJwwuvaVIXJ9nqEqRrYi\",\"source\":\"com.bluems.acc.account\",\"type\":\"com.bluems.acc.account-created\",\"time\":\"2025-11-10T17:44:10.197Z\",\"combluemsaccountid\":\"194515064449\",\"data\":{\"accountId\":\"194515064449\",\"createdBy\":\"goliveira@bluemarketing.com\",\"name\":\"teste\",\"tags\":[],\"createdAt\":\"2025-11-10T17:44:09.949Z\",\"owner\":\"goliveira@bluemarketing.com\",\"creationMode\":\"member-account\",\"brn\":\"brn:bms:acc:global::account:194515064449\"}}",
+          "Timestamp": "2025-11-10T17:44:10.219Z",
+          "SignatureVersion": "1",
+          "Signature": "CAT8Q4VyLPt4rLGwDxsDmqMDN/pI9ztciRiiMgigPzH8xw/fqGp+m7s2ELlCNzDSuwk0LH1lktdpmGsj74oswSunDRo91d1i5MyzKZP2t8wOv74m7ZXCtuoAqIORV3W5r2lGBdXpm+aSQ7XN8R07y7C6CcRKV7GegXKZ+GBMucR8CRmZmMH5XLmSDa+3v0mvRR/L48THXxKz8v4NWc9I3Xx8NWw8ZK2/GnHhWAjUvqla84a0ARpXjhZPJNcGafgJOKoQ1Abw+GHhLskvA7JOYwTBWrZSRTktwymztRc3Dmuv0VQmbAOPBJiNZhS7vBErSBm2zhgELmq49LjSmCXbHg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--account-changed-events--f4ub:6e1efdc4-4a0a-462c-acac-ff38faf91e74"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "35ITae7AJwwuvaVIXJ9nqEqRrYi",
+          "source": "com.bluems.acc.account",
+          "type": "com.bluems.acc.account-created",
+          "time": "2025-11-10T17:44:10.197Z",
+          "combluemsaccountid": "194515064449",
+          "data": {
+            "accountId": "194515064449",
+            "createdBy": "goliveira@bluemarketing.com",
+            "name": "teste",
+            "tags": [],
+            "createdAt": "2025-11-10T17:44:09.949Z",
+            "owner": "klima@bluemarketing.com",
+            "creationMode": "enrollment",
+            "brn": "brn:bms:acc:global::account:194515064449"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "b8091171-3c87-458d-9ac3-503fbc5f6aca",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:44:35.257Z",
+      "updatedAt": "2025-12-05T17:44:35.257Z",
+      "role": "workflow:owner",
+      "workflowId": "i3B2tsWqkw6GMwRo",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
