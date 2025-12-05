@@ -1,0 +1,143 @@
+{
+  "createdAt": "2025-12-05T17:48:12.936Z",
+  "updatedAt": "2025-12-05T17:48:12.936Z",
+  "id": "20LrZim8rvgy3Duh",
+  "name": "sns--ads--ad-changed-events",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9",
+          "mode": "list",
+          "cachedResultName": "dev--ads--ad-changed-events--bzo9",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -64
+      ],
+      "id": "5882624a-cf4d-409d-bda7-687a1da98966",
+      "name": "AWS SNS Trigger1",
+      "webhookId": "f927273b-7a8c-4d52-81fd-4731b96ea1ba",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -64
+      ],
+      "id": "84e5a09e-afce-4b60-80c8-2a7e1c27efdd",
+      "name": "Convert to JSON"
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "AWS SNS Trigger1": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "049eef70-d3cb-5dfa-a9e5-8ef4bec13711",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"351vQmWXtNVfliQkK66VFNPE49h\",\"source\":\"com.bluems.ads.ad\",\"type\":\"com.bluems.ads.ad-patched\",\"time\":\"2025-11-04T21:06:18.641Z\",\"combluemsaccountid\":\"120423812583\",\"data\":{\"adId\":\"351pGQY0sJZzVNKX9cqkh9lXgdh\",\"accountId\":\"120423812583\",\"exchangeReviews\":[{\"status\":\"approved\",\"comments\":\"\",\"updatedAt\":\"2025-11-04T21:06:17.106Z\",\"exchangeId\":\"adx\",\"exchangeReviewId\":\"dev-351pGQY0sJZzVNKX9cqkh9lXgdh\"},{\"status\":\"reviewing\",\"comments\":\"\",\"updatedAt\":\"2025-11-04T21:04:17.714Z\",\"exchangeId\":\"xandr\",\"exchangeReviewId\":\"dev-351pGQY0sJZzVNKX9cqkh9lXgdh\"}],\"name\":\"Teste.png\",\"tags\":[\"QQHXHR\"],\"archived\":false,\"domain\":\"bluems.com\",\"spec\":{\"banner\":{\"width\":300,\"height\":250}},\"createdAt\":\"2025-11-04T20:15:35.039Z\",\"modifiedAt\":\"2025-11-04T21:06:17.106Z\",\"brn\":\"brn:bms:ads:global:120423812583:ad:351pGQY0sJZzVNKX9cqkh9lXgdh\"}}",
+          "Timestamp": "2025-11-04T21:06:18.666Z",
+          "SignatureVersion": "1",
+          "Signature": "gr+sybJcA/zlChHicfxCsIYnIR9HcYKPNYTXzH4tlKwoZ5BWe058vaew59E1tTiTMdSWcHUeoUuTksG7TLwIgUB+hhNNG98HoGUylOO1e1eqhP3fEkMefSczGg5cxwVPR+7K1JsaOAvaAXjOc6xV5KNdy94740Y+ibulhCHJBKLpbd4KLXp1SBFVt9E2h2tgkQDZeSDbZ9GIRAKA2joWt7Y5+6OO+xLOFbjOMiFa0qQqDt6L/IHgRk87O8tmltCxUE2PVFXDPvwHnvGYrs9P+0GQB/iU6O2+D5muQGpgvtNT8b8f69TL0DLKof2k6G0JFZNey0OOduvRXNGw8jpOJw==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--ads--ad-changed-events--bzo9:22b577a7-f4f8-4bbc-b298-593eb15f7f5f"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "351vQmWXtNVfliQkK66VFNPE49h",
+          "source": "com.bluems.ads.ad",
+          "type": "com.bluems.ads.ad-patched",
+          "time": "2025-11-04T21:06:18.641Z",
+          "combluemsaccountid": "120423812583",
+          "data": {
+            "adId": "351pGQY0sJZzVNKX9cqkh9lXgdh",
+            "accountId": "620150898924",
+            "exchangeReviews": [
+              {
+                "status": "approved",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:06:17.106Z",
+                "exchangeId": "adx",
+                "exchangeReviewId": "dev-351pGQY0sJZzVNKX9cqkh9lXgdh"
+              },
+              {
+                "status": "reviewing",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:04:17.714Z",
+                "exchangeId": "xandr",
+                "exchangeReviewId": "dev-351pGQY0sJZzVNKX9cqkh9lXgdh"
+              }
+            ],
+            "name": "Teste.png",
+            "tags": [
+              "QQHXHR"
+            ],
+            "archived": false,
+            "domain": "bluems.com",
+            "spec": {
+              "banner": {
+                "width": 300,
+                "height": 250
+              }
+            },
+            "createdAt": "2025-11-04T20:15:35.039Z",
+            "modifiedAt": "2025-11-04T21:06:17.106Z",
+            "brn": "brn:bms:ads:global:120423812583:ad:351pGQY0sJZzVNKX9cqkh9lXgdh"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "61bfc6f5-0a70-4845-af17-756e78f09722",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:48:12.936Z",
+      "updatedAt": "2025-12-05T17:48:12.936Z",
+      "role": "workflow:owner",
+      "workflowId": "20LrZim8rvgy3Duh",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
