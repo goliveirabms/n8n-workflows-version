@@ -1,0 +1,146 @@
+{
+  "createdAt": "2025-12-05T17:50:27.907Z",
+  "updatedAt": "2025-12-05T18:05:06.021Z",
+  "id": "FxDqORsbFsr2HM6Q",
+  "name": "schedule-d7--acc--account-list-accounts",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "5e81be6e-0d90-45b6-a547-c9f7dd23c91f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters",
+              "value": "={\"createdAfter\":\"{{$json.createdAfter}}\",\"createdBefore\":\"{{$json.createdBefore}}\"}"
+            },
+            {
+              "name": "pageSize",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        0
+      ],
+      "id": "f49e2c2e-d530-49ad-a435-0dbbf1c7e94f",
+      "name": "LIST ACCOUNTS"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a data atual\nconst today = new Date();\n\n// Pega o dia anterior\nconst yesterday = new Date(today);\nyesterday.setDate(today.getDate() - 7);\n\n// Formata no padrão ISO e ajusta para início e fim do dia\nconst year = yesterday.getUTCFullYear();\nconst month = String(yesterday.getUTCMonth() + 1).padStart(2, '0');\nconst day = String(yesterday.getUTCDate()).padStart(2, '0');\n\nconst createdAfter = `${year}-${month}-${day}T00:00:00Z`;\nconst createdBefore = `${year}-${month}-${day}T23:59:59Z`;\n\n// Retorna para usar nos nodes seguintes\nreturn [{\n  json: {\n    createdAfter,\n    createdBefore\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        0
+      ],
+      "id": "af28a2a5-fa43-40bc-b834-dc886fec300c",
+      "name": "Function D-7"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "values",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "b877a9b9-7e49-4023-9ad5-d8a0aedc4b49",
+      "name": "Split Out",
+      "alwaysOutputData": false
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Function D-7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function D-7": {
+      "main": [
+        [
+          {
+            "node": "LIST ACCOUNTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST ACCOUNTS": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Function D-7": [
+      {
+        "json": {
+          "createdAfter": "2025-11-03T00:00:00Z",
+          "createdBefore": "2025-11-11T23:59:59Z"
+        }
+      }
+    ]
+  },
+  "versionId": "4b57c59b-3385-4417-8de6-e618eba1d946",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:50:27.907Z",
+      "updatedAt": "2025-12-05T17:50:27.907Z",
+      "role": "workflow:owner",
+      "workflowId": "FxDqORsbFsr2HM6Q",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
