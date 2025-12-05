@@ -1,0 +1,28 @@
+{
+  "createdAt": "2025-12-05T19:13:30.430Z",
+  "updatedAt": "2025-12-05T19:13:30.430Z",
+  "id": "xx06dju16U8sMpBN",
+  "name": "teste contas",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "442de334-4107-4418-afbf-9aaf412d196f",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T19:13:30.430Z",
+      "updatedAt": "2025-12-05T19:13:30.430Z",
+      "role": "workflow:owner",
+      "workflowId": "xx06dju16U8sMpBN",
+      "projectId": "EZ3nqk7kC4j2TqH1"
+    }
+  ],
+  "tags": []
+}
