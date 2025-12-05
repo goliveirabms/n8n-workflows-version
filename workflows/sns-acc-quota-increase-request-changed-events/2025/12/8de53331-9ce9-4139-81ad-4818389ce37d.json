@@ -1,0 +1,159 @@
+{
+  "createdAt": "2025-12-05T17:46:49.341Z",
+  "updatedAt": "2025-12-05T20:45:17.909Z",
+  "id": "TY1uTVbxoEjMaDZf",
+  "name": "sns--acc--quota-increase-request-changed-events",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "mode": "list",
+          "cachedResultName": "dev--acc--quota-increase-request-changed-events--z9pb",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "11742e7d-bd9c-466d-9887-6ae2ea4d8988",
+      "name": "AWS SNS Trigger",
+      "webhookId": "91eea7e1-0853-433e-994b-ba42130b9d04",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return JSON.parse($json.Message)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        16
+      ],
+      "id": "08c2c11c-3cc4-42ec-a85a-c9fc7562484e",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "i90yG42yWPJBHhWH",
+          "mode": "list",
+          "cachedResultName": "My Sub-Workflow 2",
+          "cachedResultUrl": "/workflow/i90yG42yWPJBHhWH"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        -192
+      ],
+      "id": "feffc761-23b1-48c9-8594-1f9f92647b9e",
+      "name": "Execute Workflow"
+    }
+  ],
+  "connections": {
+    "AWS SNS Trigger": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "AWS SNS Trigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "d762b9cf-19e3-5a71-82c7-d86e7cefc7d7",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"361zTtxBkbLUOqpS1mL0T5IRQbC\",\"source\":\"com.bluems.acc.quota\",\"type\":\"com.bluems.acc.quota-increase-request-created\",\"time\":\"2025-11-26T20:27:56.345Z\",\"combluemsaccountid\":\"930089676635\",\"data\":{\"quotaIncreaseRequestId\":\"361zTOsvvs8iGC5k2GEVNmSTYsz\",\"accountId\":\"930089676635\",\"quotaId\":\"dsp--campaign--campaign-limit\",\"response\":null,\"status\":\"pending\",\"value\":20,\"reason\":\"TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste\",\"createdAt\":\"2025-11-26T20:27:52.970Z\",\"updatedAt\":\"2025-11-26T20:27:52.970Z\"}}",
+          "Timestamp": "2025-11-26T20:27:56.378Z",
+          "SignatureVersion": "1",
+          "Signature": "MY9UQyIhy9d15u4axTdlB2iFmKuYQvHPU02t33d52fJLwsZ8Az+uNWAHO0FGtOrtYFOAnvxbBtkzc1yna61nPgwMyKXFWfJrZ5X01nT730G9ahwkXcT2NFRnDu/uM/J9iDHObyMbVIUbTzSXxVhz11nv3d4/9YL498qWAwTg7uxdZF96k+AbFT2FnIWG6mxwu20JqF86LlXW1jQeYo/2dEaxtkEh4QdR756QjDj0YA6s52PgmxZksVN8hnXtgxOljkTsVriqNRd2yWG1n4fuJzinm1auR72lS2p6zZGJRnu225GHg/8tQ7RB8Lw0qdWLXEiHbLLyW5IQ0/gaeRQNGg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:ad9d962f-4db9-4b8e-9bf4-477467d61cb7"
+        }
+      }
+    ],
+    "Convert to JSON": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "361zTtxBkbLUOqpS1mL0T5IRQbC",
+          "source": "com.bluems.acc.quota",
+          "type": "com.bluems.acc.quota-increase-request-created",
+          "time": "2025-11-26T20:27:56.345Z",
+          "combluemsaccountid": "930089676635",
+          "data": {
+            "quotaIncreaseRequestId": "361zTOsvvs8iGC5k2GEVNmSTYsz",
+            "accountId": "930089676635",
+            "quotaId": "dsp--campaign--campaign-limit",
+            "response": null,
+            "status": "rejected",
+            "value": 20,
+            "reason": "TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste",
+            "createdAt": "2025-11-26T20:27:52.970Z",
+            "updatedAt": "2025-11-26T20:27:52.970Z"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "8de53331-9ce9-4139-81ad-4818389ce37d",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:46:49.341Z",
+      "updatedAt": "2025-12-05T17:46:49.341Z",
+      "role": "workflow:owner",
+      "workflowId": "TY1uTVbxoEjMaDZf",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
