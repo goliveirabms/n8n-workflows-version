@@ -1,0 +1,669 @@
+{
+  "createdAt": "2025-12-06T14:58:06.811Z",
+  "updatedAt": "2025-12-06T17:22:10.274Z",
+  "id": "5NwsqKfIomqko4oV",
+  "name": "[monday] Tag Validation",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=http://api.cookie-pool.dmp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('Start').item.json.accountId }}/cookie-pools",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        80
+      ],
+      "id": "803215ff-ed6f-4b68-a357-729c553c0683",
+      "name": "List Cookie Pool"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0e43ba9f-a80e-4a84-ab5c-8adf38881a74",
+              "leftValue": "={{ $json.values[0].cookiePoolId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1712,
+        80
+      ],
+      "id": "305ebf86-0587-4631-b0ad-140a315d1589",
+      "name": "Tem Cookie Pool?",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "url": "=http://api.cookie-pool.dmp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.values[0].accountId }}/cookie-pools/{{ $json.values[0].cookiePoolId }}/installation-status",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1936,
+        -32
+      ],
+      "id": "1d7a0f8a-8a3a-4d90-8852-a5b038f90c0a",
+      "name": "Get Installation Status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0e43ba9f-a80e-4a84-ab5c-8adf38881a74",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "not_detected",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "9aa040ca-a148-405e-8297-5932bfb02482",
+              "leftValue": "={{ $json.evaluators[0].issues[0].title }}",
+              "rightValue": "Not detected",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        -32
+      ],
+      "id": "a87417b3-096b-4ca9-9e92-ba0cebdbd3dc",
+      "name": "Instalado e Funcionando?",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"query\": `query {\n      boards (ids: [9717645780]) {\n        items_page (query_params: {\n          rules: [{\n            column_id: \"text_mkwpqa68\",\n            compare_value: [\"$('If does not contain campaigns and createMode is equal enrollment').item.json.email\"]\n          }]\n        }) {\n          items {\n            id\n            column_values(ids: [\"deal_stage\"]) {\n              text\n            }\n          }\n        }\n      }\n    }`\n  }\n}}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2608,
+        -32
+      ],
+      "id": "14214f05-116a-4b48-9e02-140a3ffae6e6",
+      "name": "Busca e-mail Board Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $json.data.boards[0].items_page.items[0].id }}",
+        "value": "=<strong>🚀 Missão: Ativação Pendente!</strong>\n\nEi time, temos uma oportunidade quente esfriando aqui! 🥶\n\n\nO cliente <strong>{{ $('Start').item.json.fullName }}</strong> completou 7 dias de casa na BMS, mas ainda não ativou nenhuma campanha. Será que estar travado em alguma etapa?\n\n🎯 Sua missão: Faça contato agora, desbloqueie esse cliente e garanta mais essa vitória! Bora virar esse jogo? 💪\n\nAccount ID: {{ $('Start').item.json.accountId }}\n\n#GoSales #BMS\n\n\n🚧 <strong>OBSTÁCULO TÉCNICO DETECTADO (48h)</strong> 🚧<br><br>\n\nTime, atenção aqui! O cliente <strong>{{ $('GET User - givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User - givenName + familyName + userLanguage').item.json.familyName }}</strong> avançou no setup, criou o Cookie Pool, mas <strong>a instalação não foi concluída.</strong> 📉<br><br>\n\nJá se passaram 48h e ainda não estamos recebendo eventos. Sem isso, a ferramenta não roda e ele não vê valor!<br><br>\n\n🎯 <strong>Sua Missão:</strong> O cliente provavelmente travou na hora de colocar o script no site. Faça um contato oferecendo ajuda técnica (\"Posso te ajudar a instalar?\"). Vamos garantir esse \"Check\" verde? ✅<br><br>\n\n🆔 <strong>Account ID:</strong> {{ $('Start').item.json.accountId }}<br>\n#TechSupport #Ativação #CookiePool"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        3056,
+        -192
+      ],
+      "id": "f63a7fc4-95f6-4554-86b0-18f1db9254f5",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "868c4b15-3744-4e34-8ec5-d4ad32eb1038",
+              "leftValue": "={{ $json.data.boards[0].items_page.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2832,
+        -96
+      ],
+      "id": "02625648-404d-4ee0-9517-4d910ca88a72",
+      "name": "Achou o Item?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3280,
+        -96
+      ],
+      "id": "89a8e6b4-c20d-4a04-abcf-7af620a9224b",
+      "name": "Wait",
+      "webhookId": "6f24aa99-bad2-481c-ba3b-e3e3fed75fdd"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "345c7abe-ed7f-4e76-be03-dc28d1c11e62",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3056,
+        0
+      ],
+      "id": "8c8af800-6f6e-4eb2-85dc-ef67965736d9",
+      "name": "Recorrência"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08L5PKTSLT",
+          "mode": "id"
+        },
+        "text": "TESTE KESLLEY - FLUXO N8N - [ERRO AO ATUALIZAR ITEM NO MONDAY]",
+        "otherOptions": {
+          "includeLinkToWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        3280,
+        96
+      ],
+      "id": "be12b703-7736-443e-9f63-2a6e6ff09b2b",
+      "name": "Send a message",
+      "webhookId": "cdf9a7df-cc9f-4370-bea1-ceadfb4be353",
+      "retryOnFail": false,
+      "credentials": {
+        "slackApi": {
+          "id": "70YvF30wUadRU4zb",
+          "name": "Slack account - BMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3504,
+        80
+      ],
+      "id": "38cc2af8-cd48-4d57-91a1-10c08806c2fb",
+      "name": "Compilador de Dados"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $('If does not contain campaigns and createMode is equal enrollment').item.json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2384,
+        -32
+      ],
+      "id": "528677d8-bfc1-4aec-86ea-e39ab34031ff",
+      "name": "GET User - givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "url": "http://api.cookie-pool.dmp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{accountId}/cookie-pools/{cookiePoolId}/installation-status",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        272
+      ],
+      "id": "edfd45d0-c91d-4b6a-8f4a-204f2db714ce",
+      "name": "List Tracker",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "=http://api.campaign.dsp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.accountId || $('LIST ACCOUNTS').item.json.accountId}}/campaigns",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        176
+      ],
+      "id": "464d8984-64d1-459e-bebd-6a74ce8385a8",
+      "name": "LIST CAMPAIGN - Verifiy if exist campaigns",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "745fbf43-a5fb-4835-85ee-0f9697478832",
+              "leftValue": "={{ $json.values }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9cfd0d1a-0a33-4d27-8011-23b70cab82c8",
+              "leftValue": "={{ $('Start').item.json.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        176
+      ],
+      "id": "0de66280-1590-4f9f-89c4-374618b12cd5",
+      "name": "If does not contain campaigns and createMode is equal enrollment"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1936,
+        176
+      ],
+      "id": "4459a87c-1557-40a2-a336-7d44bae1b349",
+      "name": "Fluxo para avisar que não criou Cookie ainda?",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        176
+      ],
+      "id": "31515842-4b92-43fa-9b26-129aa087d5ed",
+      "name": "Start"
+    }
+  ],
+  "connections": {
+    "List Cookie Pool": {
+      "main": [
+        [
+          {
+            "node": "Tem Cookie Pool?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Cookie Pool?": {
+      "main": [
+        [
+          {
+            "node": "Get Installation Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fluxo para avisar que não criou Cookie ainda?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Installation Status": {
+      "main": [
+        [
+          {
+            "node": "Instalado e Funcionando?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday": {
+      "main": [
+        [
+          {
+            "node": "Achou o Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Achou o Item?": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recorrência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Compilador de Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recorrência": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compilador de Dados": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User - givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instalado e Funcionando?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "GET User - givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Tracker": {
+      "main": [
+        []
+      ]
+    },
+    "LIST CAMPAIGN - Verifiy if exist campaigns": {
+      "main": [
+        [
+          {
+            "node": "If does not contain campaigns and createMode is equal enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If does not contain campaigns and createMode is equal enrollment": {
+      "main": [
+        [
+          {
+            "node": "List Cookie Pool",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "List Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "LIST CAMPAIGN - Verifiy if exist campaigns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "accountId": "303771594561",
+          "createdBy": "mateusacauhi@bluems.com",
+          "name": "Conta Externa",
+          "tags": [],
+          "createdAt": "2025-12-04T13:23:55.879Z",
+          "owner": "mateusacauhi@bluems.com",
+          "creationMode": "member-account",
+          "brn": "brn:bms:acc:global::account:303771594561",
+          "email": "mateusacauhi@bluems.com",
+          "accountName": "Conta Externa"
+        }
+      },
+      {
+        "json": {
+          "accountId": "564217944511",
+          "createdBy": "payenor768@bialode.com",
+          "name": "payenor768@bialode.com's account",
+          "tags": [
+            "Main"
+          ],
+          "createdAt": "2025-12-04T15:24:11.828Z",
+          "owner": "payenor768@bialode.com",
+          "creationMode": "enrollment",
+          "brn": "brn:bms:acc:global::account:564217944511",
+          "email": "payenor768@bialode.com",
+          "accountName": "payenor768@bialode.com's account"
+        }
+      },
+      {
+        "json": {
+          "accountId": "340947672707",
+          "createdBy": "peritit588@cexch.com",
+          "name": "peritit588@cexch.com's account",
+          "tags": [
+            "Main"
+          ],
+          "createdAt": "2025-12-04T17:20:20.708Z",
+          "owner": "peritit588@cexch.com",
+          "creationMode": "enrollment",
+          "brn": "brn:bms:acc:global::account:340947672707",
+          "email": "peritit588@cexch.com",
+          "accountName": "peritit588@cexch.com's account"
+        }
+      },
+      {
+        "json": {
+          "accountId": "871356085276",
+          "createdBy": "rexose1908@cexch.com",
+          "name": "rexose1908@cexch.com's account",
+          "tags": [
+            "Main"
+          ],
+          "createdAt": "2025-12-04T13:01:26.640Z",
+          "owner": "rexose1908@cexch.com",
+          "creationMode": "enrollment",
+          "brn": "brn:bms:acc:global::account:871356085276",
+          "email": "rexose1908@cexch.com",
+          "accountName": "rexose1908@cexch.com's account"
+        }
+      }
+    ]
+  },
+  "versionId": "a7749977-a83e-485e-baf6-21b1ff6b0546",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-06T14:58:06.811Z",
+      "updatedAt": "2025-12-06T14:58:06.811Z",
+      "role": "workflow:owner",
+      "workflowId": "5NwsqKfIomqko4oV",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
