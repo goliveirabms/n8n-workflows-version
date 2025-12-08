@@ -1,0 +1,466 @@
+{
+  "createdAt": "2025-12-07T19:17:55.502Z",
+  "updatedAt": "2025-12-07T21:20:27.754Z",
+  "id": "lPS6jJ8Iak4Cq5Ib",
+  "name": "[monday] First Ad Approved",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -136
+      ],
+      "id": "dd48dfb4-1d98-4f89-af79-e9ae368fc9b5",
+      "name": "Start"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"query { boards (ids: [9717645780]) { items_page (query_params: { rules: [{ column_id: \\\"text_mkwpqa68\\\", compare_value: [\\\"{{ $json.email }}\\\"] }] }) { items { id column_values(ids: [\\\"deal_stage\\\"]) { text } } } } }\",\n  \"variables\": {}\n}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        -136
+      ],
+      "id": "7db461c5-b758-4431-9cf5-85e8acb88d48",
+      "name": "Busca e-mail Board Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $json.data.boards[0].items_page.items[0].id }}",
+        "value": "=🚧 <strong>OBSTÁCULO TÉCNICO DETECTADO (48h)</strong> 🚧\n\nTime, atenção aqui!\nO cliente <strong>{{ $('GET User - givenName + familyName + userLanguage').item.json.givenName }} {{ $('GET User - givenName + familyName + userLanguage').item.json.familyName }}</strong> avançou no setup, criou o Cookie Pool, mas <strong>a instalação não foi concluída.</strong> 📉\n\nJá se passaram 48h e ainda não estamos recebendo eventos.\n\n🎯 <strong>Sua Missão:</strong> O cliente provavelmente travou na hora de colocar o script no site. Faça um contato oferecendo ajuda técnica (\"Posso te ajudar a instalar?\"). Vamos garantir esse \"Check\" verde? ✅\n\n🆔 <strong>Account ID:</strong>{{ $('Start').item.json.accountId }}\n\n#TechSupport #Ativação #CookiePool"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        -304
+      ],
+      "id": "b6733969-ca98-46b9-ac26-f089293076ee",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "868c4b15-3744-4e34-8ec5-d4ad32eb1038",
+              "leftValue": "={{ $json.data.boards[0].items_page.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        -208
+      ],
+      "id": "d501036c-41ec-46e0-84af-d8248d7a3a3c",
+      "name": "Achou o Item?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        -208
+      ],
+      "id": "7b12591d-f248-426c-8fb9-633a8f5a4eaf",
+      "name": "Wait",
+      "webhookId": "6f24aa99-bad2-481c-ba3b-e3e3fed75fdd"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "345c7abe-ed7f-4e76-be03-dc28d1c11e62",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        -112
+      ],
+      "id": "6f265fff-ac93-4088-8bd4-098c0e268595",
+      "name": "Recorrência"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08L5PKTSLT",
+          "mode": "id"
+        },
+        "text": "TESTE KESLLEY - FLUXO N8N - [ERRO AO ATUALIZAR ITEM NO MONDAY]",
+        "otherOptions": {
+          "includeLinkToWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1792,
+        -16
+      ],
+      "id": "df07b26c-525a-465d-a9e8-eea54ce1e0d7",
+      "name": "Send a message",
+      "webhookId": "cdf9a7df-cc9f-4370-bea1-ceadfb4be353",
+      "retryOnFail": false,
+      "credentials": {
+        "slackApi": {
+          "id": "70YvF30wUadRU4zb",
+          "name": "Slack account - BMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2016,
+        -40
+      ],
+      "id": "0d706faf-d078-4e2b-b2d6-e90a5515c2f4",
+      "name": "Compilador de Dados"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $('If does not contain campaigns and createMode is equal enrollment').item.json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        -136
+      ],
+      "id": "c2c57bc1-71ef-4029-83d1-a29f9d96787c",
+      "name": "GET User - givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.ad.ads.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.data.accountId }}/ads",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -136
+      ],
+      "id": "b270a0f3-4829-4191-955c-055d9de47569",
+      "name": "List Ads"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "96d27248-7549-4718-af02-cb82ff94a7cb",
+              "leftValue": "={{ $json.isFirstAd }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -136
+      ],
+      "id": "c5fbda91-72a4-4f4f-9111-7f688ebd1644",
+      "name": "First Round of Approved Ads?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega todos os ads retornados\nconst allAds = $input.all().map(item => item.json);\n\n// Conta quantos estão aprovados (Assumindo que o status fica em exchangeReviews)\nconst approvedAds = allAds.filter(ad => \n   ad.exchangeReviews && ad.exchangeReviews.some(review => review.status === 'approved')\n);\n\n// Verifica se é o primeiro (Total = 1)\nconst isFirst = approvedAds.length === 1;\n\n// RETORNO OBRIGATÓRIO: Um array com um objeto JSON\nreturn [{\n  json: {\n    isFirstAd: isFirst,\n    totalApproved: approvedAds.length\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -136
+      ],
+      "id": "70a9d9e0-d044-4bca-98d8-510f3d3b0456",
+      "name": "Logic to Record Approvals and Check if First"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "List Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday": {
+      "main": [
+        [
+          {
+            "node": "Achou o Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Achou o Item?": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recorrência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Compilador de Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recorrência": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compilador de Dados": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User - givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Ads": {
+      "main": [
+        [
+          {
+            "node": "Logic to Record Approvals and Check if First",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "First Round of Approved Ads?": {
+      "main": [
+        [
+          {
+            "node": "GET User - givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Logic to Record Approvals and Check if First": {
+      "main": [
+        [
+          {
+            "node": "First Round of Approved Ads?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "351vQmWXtNVfliQkK66VFNPE49h",
+          "source": "com.bluems.ads.ad",
+          "type": "com.bluems.ads.ad-patched",
+          "time": "2025-11-04T21:06:18.641Z",
+          "combluemsaccountid": "120423812583",
+          "data": {
+            "adId": "351pGQY0sJZzVNKX9cqkh9lXgdh",
+            "accountId": "620150898924",
+            "exchangeReviews": [
+              {
+                "status": "approved",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:06:17.106Z",
+                "exchangeId": "adx",
+                "exchangeReviewId": "dev-351pGQY0sJZzVNKX9cqkh9lXgdh"
+              },
+              {
+                "status": "reviewing",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:04:17.714Z",
+                "exchangeId": "xandr",
+                "exchangeReviewId": "dev-351pGQY0sJZzVNKX9cqkh9lXgdh"
+              }
+            ],
+            "name": "Teste.png",
+            "tags": [
+              "QQHXHR"
+            ],
+            "archived": false,
+            "domain": "bluems.com",
+            "spec": {
+              "banner": {
+                "width": 300,
+                "height": 250
+              }
+            },
+            "createdAt": "2025-11-04T20:15:35.039Z",
+            "modifiedAt": "2025-11-04T21:06:17.106Z",
+            "brn": "brn:bms:ads:global:120423812583:ad:351pGQY0sJZzVNKX9cqkh9lXgdh"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "958b21f0-984e-485a-aff1-e53c4827a97f",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-07T19:17:55.502Z",
+      "updatedAt": "2025-12-07T19:17:55.502Z",
+      "role": "workflow:owner",
+      "workflowId": "lPS6jJ8Iak4Cq5Ib",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
