@@ -1,0 +1,289 @@
+{
+  "createdAt": "2025-12-05T17:50:27.907Z",
+  "updatedAt": "2025-12-11T19:00:36.848Z",
+  "id": "FxDqORsbFsr2HM6Q",
+  "name": "schedule-d7--acc--account-list-accounts",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GacbtOdXGScd1V3r",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/GacbtOdXGScd1V3r",
+          "cachedResultName": "[email] First Campaign"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        -256
+      ],
+      "id": "e5163cc0-bed4-4b6b-a28a-f2dc628c1db8",
+      "name": "Call '[email] Fist Campaign'",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  {\n    \"email\": {{ $json.email }},\n    \"fullName\": {{ $json.givenName }} + \" \" + {{ $json.familyName }},\n    \"accountId\": {{ $('splitAccounts').item.json.accountId }}\n  }\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -256
+      ],
+      "id": "31bf3300-639f-4562-afe5-27e13a27f16b",
+      "name": "Compilador de Dados - E-mail",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -160
+      ],
+      "id": "5e81be6e-0d90-45b6-a547-c9f7dd23c91f",
+      "name": "scheduleTrigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a data atual\nconst today = new Date();\n\n// Pega o dia anterior\nconst yesterday = new Date(today);\nyesterday.setDate(today.getDate() - 7);\n\n// Formata no padrão ISO e ajusta para início e fim do dia\nconst year = yesterday.getUTCFullYear();\nconst month = String(yesterday.getUTCMonth() + 1).padStart(2, '0');\nconst day = String(yesterday.getUTCDate()).padStart(2, '0');\n\nconst createdAfter = `${year}-${month}-${day}T00:00:00Z`;\nconst createdBefore = `${year}-${month}-${day}T23:59:59Z`;\n\n// Retorna para usar nos nodes seguintes\nreturn [{\n  json: {\n    createdAfter,\n    createdBefore\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -160
+      ],
+      "id": "af28a2a5-fa43-40bc-b834-dc886fec300c",
+      "name": "functionD-7"
+    },
+    {
+      "parameters": {
+        "url": "http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters",
+              "value": "={\"createdAfter\":\"{{$json.createdAfter}}\",\"createdBefore\":\"{{$json.createdBefore}}\"}"
+            },
+            {
+              "name": "pageSize",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        -160
+      ],
+      "id": "f49e2c2e-d530-49ad-a435-0dbbf1c7e94f",
+      "name": "listAccounts"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "values",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -160
+      ],
+      "id": "b877a9b9-7e49-4023-9ad5-d8a0aedc4b49",
+      "name": "splitAccounts",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "@Keslley, vai usar?\n\nass: Gabriel",
+        "height": 256,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "b688453c-a7e2-40d5-ae63-03483e4f3972",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "=={{\n  {\n    \"accountId\": $json.accountId,\n    \"email\": $json.owner,\n    \"accountName\": $json.name\n  }\n}}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -64
+      ],
+      "id": "6525b470-627e-4da6-91cc-03a3a50e9081",
+      "name": "dataCompilation"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "x8SVf2ggVjC11PD3",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/x8SVf2ggVjC11PD3",
+          "cachedResultName": "[monday] Update: Non-campaign account created 7 days ago."
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        -64
+      ],
+      "id": "4c154c21-a27b-4502-998a-6add0b2c636e",
+      "name": "[MONDAY] callCampaignNotCreated"
+    }
+  ],
+  "connections": {
+    "Compilador de Dados - E-mail": {
+      "main": [
+        [
+          {
+            "node": "Call '[email] Fist Campaign'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "scheduleTrigger": {
+      "main": [
+        [
+          {
+            "node": "functionD-7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "functionD-7": {
+      "main": [
+        [
+          {
+            "node": "listAccounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listAccounts": {
+      "main": [
+        [
+          {
+            "node": "splitAccounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "splitAccounts": {
+      "main": [
+        [
+          {
+            "node": "dataCompilation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Compilador de Dados - E-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dataCompilation": {
+      "main": [
+        [
+          {
+            "node": "[MONDAY] callCampaignNotCreated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "functionD-7": [
+      {
+        "json": {
+          "createdAfter": "2025-11-03T00:00:00Z",
+          "createdBefore": "2025-11-11T23:59:59Z"
+        }
+      }
+    ]
+  },
+  "versionId": "2c5c6a67-11ff-4325-a760-b6e9b9ebece6",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:50:27.907Z",
+      "updatedAt": "2025-12-05T17:50:27.907Z",
+      "role": "workflow:owner",
+      "workflowId": "FxDqORsbFsr2HM6Q",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
