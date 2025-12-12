@@ -1,0 +1,386 @@
+{
+  "createdAt": "2025-11-04T14:08:18.364Z",
+  "updatedAt": "2025-12-12T12:46:33.965Z",
+  "id": "GacbtOdXGScd1V3r",
+  "name": "email-subworkflow-firstCampaignNotCreated",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "pt-BR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f9e74457-3309-4cf9-9b84-f28c265b3039"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pt-BR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "df12c731-f99c-45a7-8219-1011754d5e3f",
+                    "leftValue": "={{ $json.userLanguage }}",
+                    "rightValue": "en-US",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-US"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 1
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -896,
+        240
+      ],
+      "id": "09a8ad73-5a58-4ff4-ac96-357aefe6dad6",
+      "name": "Switch - Verify language"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 20,
+        "receipients": "={{ $('[TRIGGER] receivedAccountsThatNotCreateACampaign').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $json.givenName }} {{ $json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        144
+      ],
+      "id": "3ad4a167-2256-4598-9bad-8dcdc684c73f",
+      "name": "Send Email - First Campaign - pt-BR",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "templateId": 21,
+        "receipients": "={{ $('[TRIGGER] receivedAccountsThatNotCreateACampaign').item.json.owner }}",
+        "additionalFields": {
+          "templateParameters": {
+            "parameterValues": {
+              "parameters": "=USERNAME=  {{ $json.givenName }} {{ $json.familyName }}"
+            }
+          }
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        336
+      ],
+      "id": "011573e3-c33f-49b6-a58a-3df07d227e3c",
+      "name": "Send Email - First Campaign - en-US",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "vIHEsr5CjA2HhEXe",
+          "name": "Brevo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://api.notification.mon.sd.internal.us-east-2.bluemsdev.team/v1/accounts/930089676635/notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": {\n    \"en\": \"Campaign Created Successfully!\",\n    \"pt\": \"Campanha Criada com Sucesso!\",\n    \"es\": \"¡Campaña Creada con Éxito!\"\n  },\n  \"detail\": {\n    \"en\": \"Your first campaign has been successfully created and is ready to run on BMS! Access your dashboard to track performance and results.\",\n    \"pt\": \"Sua primeira campanha foi criada com sucesso e está pronta para rodar no BMS! Acesse seu painel para acompanhar a performance e os resultados.\",\n    \"es\": \"Su primera campaña ha sido creada con éxito y está lista para ejecutarse en BMS! Accede a tu panel para monitorear el rendimiento y los resultados.\"\n  },\n  \"severity\": \"high\",\n  \"documentationUrl\": \"http://example.com/docs/limit-extension\",\n  \"deduplicationWindowSeconds\": 5,\n  \"source\": \"com.bluems.dsp.campaign\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        240
+      ],
+      "id": "c15f9e5b-77a1-4f34-ac67-e85a22ac546f",
+      "name": "Notification"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1792,
+        336
+      ],
+      "id": "81f6d240-1e42-4db6-8c9a-02853333d200",
+      "name": "[TRIGGER] receivedAccountsThatNotCreateACampaign",
+      "notes": "receivedAccountThatNotCreateACampaign"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.campaign.dsp.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.accountId || $('LIST ACCOUNTS').item.json.accountId}}/campaigns",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1568,
+        336
+      ],
+      "id": "c47d5ae4-a0c4-4880-b5ac-dfa6156acb3b",
+      "name": "listCampaigns"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "745fbf43-a5fb-4835-85ee-0f9697478832",
+              "leftValue": "={{ $json.values }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9cfd0d1a-0a33-4d27-8011-23b70cab82c8",
+              "leftValue": "={{ $('[TRIGGER] receivedAccountsThatNotCreateACampaign').item.json.creationMode }}",
+              "rightValue": "enrollment",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1344,
+        336
+      ],
+      "id": "1bf60d3b-d6ff-4caa-97b5-a4cf138aa77d",
+      "name": "campaigns=empty and creationMode=enrollment"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $('[TRIGGER] receivedAccountsThatNotCreateACampaign').item.json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1120,
+        240
+      ],
+      "id": "d9cec175-3978-4c86-a410-5eb8f5ee5e19",
+      "name": "getUser",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        432
+      ],
+      "id": "74c47e37-25c8-4b06-b72c-1c3c912c5200",
+      "name": "doNothing"
+    }
+  ],
+  "connections": {
+    "Switch - Verify language": {
+      "main": [
+        [
+          {
+            "node": "Send Email - First Campaign - pt-BR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email - First Campaign - en-US",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email - First Campaign - en-US": {
+      "main": [
+        [
+          {
+            "node": "Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email - First Campaign - pt-BR": {
+      "main": [
+        [
+          {
+            "node": "Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[TRIGGER] receivedAccountsThatNotCreateACampaign": {
+      "main": [
+        [
+          {
+            "node": "listCampaigns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listCampaigns": {
+      "main": [
+        [
+          {
+            "node": "campaigns=empty and creationMode=enrollment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "campaigns=empty and creationMode=enrollment": {
+      "main": [
+        [
+          {
+            "node": "getUser",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "doNothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getUser": {
+      "main": [
+        [
+          {
+            "node": "Switch - Verify language",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "[TRIGGER] receivedAccountsThatNotCreateACampaign": [
+      {
+        "json": {
+          "accountId": "122597659950",
+          "createdBy": "cesar.bulzico+4@bluems.com",
+          "name": "Root",
+          "tags": [
+            "brands"
+          ],
+          "createdAt": "2025-11-07T21:20:19.327Z",
+          "owner": "cesar.bulzico+4@bluems.com",
+          "creationMode": "enrollment",
+          "brn": "brn:bms:acc:global::account:122597659950"
+        }
+      }
+    ]
+  },
+  "versionId": "e9158364-5bed-49df-ba99-eb4e9239ae1e",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-04T14:08:18.364Z",
+      "updatedAt": "2025-11-04T14:08:18.364Z",
+      "role": "workflow:owner",
+      "workflowId": "GacbtOdXGScd1V3r",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
