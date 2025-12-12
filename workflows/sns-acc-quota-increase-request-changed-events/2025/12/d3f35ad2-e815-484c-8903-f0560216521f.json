@@ -1,0 +1,145 @@
+{
+  "createdAt": "2025-12-05T17:46:49.341Z",
+  "updatedAt": "2025-12-11T22:31:07.380Z",
+  "id": "TY1uTVbxoEjMaDZf",
+  "name": "sns--acc--quota-increase-request-changed-events",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "mode": "list",
+          "cachedResultName": "dev--acc--quota-increase-request-changed-events--z9pb",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "11742e7d-bd9c-466d-9887-6ae2ea4d8988",
+      "name": "snsTrigger",
+      "webhookId": "91eea7e1-0853-433e-994b-ba42130b9d04",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "036918ed-7032-4947-a0ea-47bea6bf1130",
+              "name": "parsedObject",
+              "value": "={{ $json.Message }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        16
+      ],
+      "id": "0ce119b2-ed2e-4a71-be19-2acd1b031c71",
+      "name": "parseObject"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3Q4KUhBcScUMlcf7",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3Q4KUhBcScUMlcf7",
+          "cachedResultName": "[email] quotaRequested"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        16
+      ],
+      "id": "7230d1a8-ba9a-4b8b-b067-3f63f51c8ce0",
+      "name": "[EMAIL] callQuotaRequest"
+    }
+  ],
+  "connections": {
+    "snsTrigger": {
+      "main": [
+        [
+          {
+            "node": "parseObject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parseObject": {
+      "main": [
+        [
+          {
+            "node": "[EMAIL] callQuotaRequest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:snsTrigger": {
+      "webhookId": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:e6cc453c-64e9-4d69-8654-6bd4e1bc3b9e"
+    }
+  },
+  "meta": null,
+  "pinData": {
+    "snsTrigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "d762b9cf-19e3-5a71-82c7-d86e7cefc7d7",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"361zTtxBkbLUOqpS1mL0T5IRQbC\",\"source\":\"com.bluems.acc.quota\",\"type\":\"com.bluems.acc.quota-increase-request-created\",\"time\":\"2025-11-26T20:27:56.345Z\",\"combluemsaccountid\":\"120423812583\",\"data\":{\"quotaIncreaseRequestId\":\"361zTOsvvs8iGC5k2GEVNmSTYsz\",\"accountId\":\"120423812583\",\"quotaId\":\"dsp--campaign--campaign-limit\",\"response\":null,\"status\":\"pending\",\"value\":20,\"reason\":\"TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste\",\"createdAt\":\"2025-11-26T20:27:52.970Z\",\"updatedAt\":\"2025-11-26T20:27:52.970Z\"}}",
+          "Timestamp": "2025-11-26T20:27:56.378Z",
+          "SignatureVersion": "1",
+          "Signature": "MY9UQyIhy9d15u4axTdlB2iFmKuYQvHPU02t33d52fJLwsZ8Az+uNWAHO0FGtOrtYFOAnvxbBtkzc1yna61nPgwMyKXFWfJrZ5X01nT730G9ahwkXcT2NFRnDu/uM/J9iDHObyMbVIUbTzSXxVhz11nv3d4/9YL498qWAwTg7uxdZF96k+AbFT2FnIWG6mxwu20JqF86LlXW1jQeYo/2dEaxtkEh4QdR756QjDj0YA6s52PgmxZksVN8hnXtgxOljkTsVriqNRd2yWG1n4fuJzinm1auR72lS2p6zZGJRnu225GHg/8tQ7RB8Lw0qdWLXEiHbLLyW5IQ0/gaeRQNGg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:ad9d962f-4db9-4b8e-9bf4-477467d61cb7"
+        }
+      }
+    ]
+  },
+  "versionId": "d3f35ad2-e815-484c-8903-f0560216521f",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-12-05T17:46:49.341Z",
+      "updatedAt": "2025-12-05T17:46:49.341Z",
+      "role": "workflow:owner",
+      "workflowId": "TY1uTVbxoEjMaDZf",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
