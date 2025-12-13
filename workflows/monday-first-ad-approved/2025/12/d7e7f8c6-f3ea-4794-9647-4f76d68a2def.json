@@ -1,0 +1,496 @@
+{
+  "createdAt": "2025-12-07T19:17:55.502Z",
+  "updatedAt": "2025-12-12T23:22:02.566Z",
+  "id": "lPS6jJ8Iak4Cq5Ib",
+  "name": "[monday] First Ad Approved",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -144
+      ],
+      "id": "dd48dfb4-1d98-4f89-af79-e9ae368fc9b5",
+      "name": "Start"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"query { boards (ids: [9717645780]) { items_page (query_params: { rules: [{ column_id: \\\"text_mkwpqa68\\\", compare_value: [\\\"{{ $('GET Account').item.json.owner }}\\\"] }] }) { items { id column_values(ids: [\\\"deal_stage\\\"]) { text } } } } }\",\n  \"variables\": {}\n}",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1344,
+        -144
+      ],
+      "id": "7db461c5-b758-4431-9cf5-85e8acb88d48",
+      "name": "Busca e-mail Board Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $json.data.boards[0].items_page.items[0].id }}",
+        "value": "=🚀 <strong>PRIMEIRO AD APROVADO!</strong> 🚀\n\nGrande marco atingido! O cliente teve seu primeiro criativo aprovado e está pronto para rodar!\n\n🎨 <strong>Ad Name:</strong> {{ $('Start').item.json.data.name }}\n🆔 <strong>Ad ID:</strong> {{ $('Start').item.json.data.adId }}\n✅ <strong>Status:</strong> Approved (Ready to Serve)\n\n<strong>Próximo Passo:</strong> Monitorar se o cliente vai ativar a campanha e começar a gastar (First Spend).\n\n🆔 <strong>Account ID:</strong> {{ $('Start').item.json.data.accountId }}\n\n#FirstAd #ActivationSuccess"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -304
+      ],
+      "id": "b6733969-ca98-46b9-ac26-f089293076ee",
+      "name": "Add an update to an item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "GkLkE7HtBr2SrfI3",
+          "name": "Monday.com account - PROD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "868c4b15-3744-4e34-8ec5-d4ad32eb1038",
+              "leftValue": "={{ $json.data.boards[0].items_page.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        -208
+      ],
+      "id": "d501036c-41ec-46e0-84af-d8248d7a3a3c",
+      "name": "Achou o Item?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2016,
+        -208
+      ],
+      "id": "7b12591d-f248-426c-8fb9-633a8f5a4eaf",
+      "name": "Wait",
+      "webhookId": "6f24aa99-bad2-481c-ba3b-e3e3fed75fdd"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "345c7abe-ed7f-4e76-be03-dc28d1c11e62",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        -112
+      ],
+      "id": "6f265fff-ac93-4088-8bd4-098c0e268595",
+      "name": "Recorrência"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08L5PKTSLT",
+          "mode": "id"
+        },
+        "text": "TESTE KESLLEY - FLUXO N8N - [ERRO AO ATUALIZAR ITEM NO MONDAY]",
+        "otherOptions": {
+          "includeLinkToWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2016,
+        -16
+      ],
+      "id": "df07b26c-525a-465d-a9e8-eea54ce1e0d7",
+      "name": "Send a message",
+      "webhookId": "cdf9a7df-cc9f-4370-bea1-ceadfb4be353",
+      "retryOnFail": false,
+      "credentials": {
+        "slackApi": {
+          "id": "70YvF30wUadRU4zb",
+          "name": "Slack account - BMS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        -48
+      ],
+      "id": "0d706faf-d078-4e2b-b2d6-e90a5515c2f4",
+      "name": "Compilador de Dados"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.user.iam.sd.internal.us-east-2.bluemsdev.team/v1/users/{{ $json.owner }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        -144
+      ],
+      "id": "c2c57bc1-71ef-4029-83d1-a29f9d96787c",
+      "name": "GET User - givenName + familyName + userLanguage"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.ad.ads.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.data.accountId }}/ads",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        -144
+      ],
+      "id": "b270a0f3-4829-4191-955c-055d9de47569",
+      "name": "List Ads"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "96d27248-7549-4718-af02-cb82ff94a7cb",
+              "leftValue": "={{ $json.isFirstAd }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -144
+      ],
+      "id": "c5fbda91-72a4-4f4f-9111-7f688ebd1644",
+      "name": "First Round of Approved Ads?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Pega o ID do Ad atual que disparou o evento\nconst currentAdId = $('Start').item.json.data.adId;\n\n// 2. Pega a lista de Ads \nconst inputItem = $input.first().json;\nconst allAdsList = inputItem.values || []; // Se vier vazio, garante um array vazio para não quebrar\n\n// 3. Filtra os anúncios aprovados\nconst approvedAds = allAdsList.filter(ad => \n   ad.exchangeReviews && ad.exchangeReviews.some(review => review.status === 'approved')\n);\n\n// 4. Lógica dos Veteranos\nconst veteranAds = approvedAds.filter(ad => ad.adId !== currentAdId);\n\n// 5. Retorno\nreturn [{\n  json: {\n    isFirstAd: veteranAds.length === 0, // Se não tem veteranos, é o primeiro!\n    totalVeterans: veteranAds.length,\n    totalApprovedFound: approvedAds.length\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -144
+      ],
+      "id": "70a9d9e0-d044-4bca-98d8-510f3d3b0456",
+      "name": "Logic to Record Approvals and Check if First"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $('List Ads').item.json.values[0].accountId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        -144
+      ],
+      "id": "e7c4db12-9393-4bdc-8c85-fcbc983dee0c",
+      "name": "GET Account"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "List Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca e-mail Board Monday": {
+      "main": [
+        [
+          {
+            "node": "Achou o Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Achou o Item?": {
+      "main": [
+        [
+          {
+            "node": "Add an update to an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recorrência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Compilador de Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recorrência": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compilador de Dados": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET User - givenName + familyName + userLanguage": {
+      "main": [
+        [
+          {
+            "node": "Busca e-mail Board Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Ads": {
+      "main": [
+        [
+          {
+            "node": "Logic to Record Approvals and Check if First",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "First Round of Approved Ads?": {
+      "main": [
+        [
+          {
+            "node": "GET Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Logic to Record Approvals and Check if First": {
+      "main": [
+        [
+          {
+            "node": "First Round of Approved Ads?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Account": {
+      "main": [
+        [
+          {
+            "node": "GET User - givenName + familyName + userLanguage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add an update to an item": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "specversion": "1.0",
+          "id": "351vQmWXtNVfliQkK66VFNPE49h",
+          "source": "com.bluems.ads.ad",
+          "type": "com.bluems.ads.ad-patched",
+          "time": "2025-11-04T21:06:18.641Z",
+          "combluemsaccountid": "120423812583",
+          "data": {
+            "adId": "36XA6u8ILlT9apvgUNwofDHWO89",
+            "accountId": "620150898924",
+            "exchangeReviews": [
+              {
+                "status": "approved",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:06:17.106Z",
+                "exchangeId": "adx",
+                "exchangeReviewId": "dev-36XA6u8ILlT9apvgUNwofDHWO89"
+              },
+              {
+                "status": "reviewing",
+                "comments": "",
+                "updatedAt": "2025-11-04T21:04:17.714Z",
+                "exchangeId": "xandr",
+                "exchangeReviewId": "dev-36XA6u8ILlT9apvgUNwofDHWO89"
+              }
+            ],
+            "name": "Teste.png",
+            "tags": [
+              "QQHXHR"
+            ],
+            "archived": false,
+            "domain": "bluems.com",
+            "spec": {
+              "banner": {
+                "width": 300,
+                "height": 250
+              }
+            },
+            "createdAt": "2025-11-04T20:15:35.039Z",
+            "modifiedAt": "2025-11-04T21:06:17.106Z",
+            "brn": "brn:bms:ads:global:120423812583:ad:36XA6u8ILlT9apvgUNwofDHWO89"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "d7e7f8c6-f3ea-4794-9647-4f76d68a2def",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-07T19:17:55.502Z",
+      "updatedAt": "2025-12-07T19:17:55.502Z",
+      "role": "workflow:owner",
+      "workflowId": "lPS6jJ8Iak4Cq5Ib",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
