@@ -1,0 +1,290 @@
+{
+  "createdAt": "2025-12-14T15:36:44.912Z",
+  "updatedAt": "2025-12-14T15:37:27.660Z",
+  "id": "YU41ok2iSGDQN5jq",
+  "name": "[working]  sns--acc--quota-increase-request-changed-events",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "topic": {
+          "__rl": true,
+          "value": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "mode": "list",
+          "cachedResultName": "dev--acc--quota-increase-request-changed-events--z9pb",
+          "cachedResultUrl": "https://us-east-2.console.aws.amazon.com/sns/v3/home?region=us-east-2#/topic/arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb"
+        }
+      },
+      "type": "n8n-nodes-base.awsSnsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f9caf2bc-bd24-4c99-bce5-f9eb80ee3646",
+      "name": "snsTrigger",
+      "webhookId": "91eea7e1-0853-433e-994b-ba42130b9d04",
+      "credentials": {
+        "aws": {
+          "id": "6a2LeR1JFdLEeTgc",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "036918ed-7032-4947-a0ea-47bea6bf1130",
+              "name": "parsedObject",
+              "value": "={{ $json.Message }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a4777710-fb1f-4f8b-9afa-06430bac52c1",
+      "name": "parseObject"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "61c41622-8cb8-4e6e-83ab-f2b4a98029ae",
+              "leftValue": "={{ $json.owner }}",
+              "rightValue": "john.doe@example.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "6b7d13ba-2b93-4e76-9465-78f512952037",
+              "leftValue": "={{ $json.owner }}",
+              "rightValue": "testing@bluems.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "30c0ff3a-4d0c-49f0-a965-fb91830affa4",
+      "name": "Removendo john.doe@example.com"
+    },
+    {
+      "parameters": {
+        "url": "=http://api.account.acc.sd.internal.us-east-2.bluemsdev.team/v1/accounts/{{ $json.parsedObject.data.accountId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "73733d80-4911-490c-b7d9-da3e5f0aa4f4",
+      "name": "getAccount"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd7cdf7b-6c91-40fa-a35f-9c50c52bf068",
+              "name": "parsedObject",
+              "value": "={{ $('parseObject').item.json.parsedObject }}",
+              "type": "object"
+            },
+            {
+              "id": "c2910702-894e-47c8-969d-d5b758e24072",
+              "name": "accountId",
+              "value": "={{ $('getAccount').item.json}}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        0
+      ],
+      "id": "99c7f0dc-7bb1-4c9c-98a4-96e7b2cc7af4",
+      "name": "dataCompilation"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "fzwSMnLP3KCXRVYe",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fzwSMnLP3KCXRVYe",
+          "cachedResultName": "email-subworkflow-quotaRequested"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "8575c2e6-64a7-4971-adaf-d77942cb2852",
+      "name": "[EMAIL] callQuotaRequested"
+    }
+  ],
+  "connections": {
+    "snsTrigger": {
+      "main": [
+        [
+          {
+            "node": "parseObject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parseObject": {
+      "main": [
+        [
+          {
+            "node": "getAccount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Removendo john.doe@example.com": {
+      "main": [
+        [
+          {
+            "node": "dataCompilation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getAccount": {
+      "main": [
+        [
+          {
+            "node": "Removendo john.doe@example.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dataCompilation": {
+      "main": [
+        [
+          {
+            "node": "[EMAIL] callQuotaRequested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "snsTrigger": [
+      {
+        "json": {
+          "Type": "Notification",
+          "MessageId": "d762b9cf-19e3-5a71-82c7-d86e7cefc7d7",
+          "TopicArn": "arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb",
+          "Message": "{\"specversion\":\"1.0\",\"id\":\"361zTtxBkbLUOqpS1mL0T5IRQbC\",\"source\":\"com.bluems.acc.quota\",\"type\":\"com.bluems.acc.quota-increase-request-created\",\"time\":\"2025-11-26T20:27:56.345Z\",\"combluemsaccountid\":\"120423812583\",\"data\":{\"quotaIncreaseRequestId\":\"361zTOsvvs8iGC5k2GEVNmSTYsz\",\"accountId\":\"120423812583\",\"quotaId\":\"dsp--campaign--campaign-limit\",\"response\":null,\"status\":\"pending\",\"value\":20,\"reason\":\"TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste\",\"createdAt\":\"2025-11-26T20:27:52.970Z\",\"updatedAt\":\"2025-11-26T20:27:52.970Z\"}}",
+          "Timestamp": "2025-11-26T20:27:56.378Z",
+          "SignatureVersion": "1",
+          "Signature": "MY9UQyIhy9d15u4axTdlB2iFmKuYQvHPU02t33d52fJLwsZ8Az+uNWAHO0FGtOrtYFOAnvxbBtkzc1yna61nPgwMyKXFWfJrZ5X01nT730G9ahwkXcT2NFRnDu/uM/J9iDHObyMbVIUbTzSXxVhz11nv3d4/9YL498qWAwTg7uxdZF96k+AbFT2FnIWG6mxwu20JqF86LlXW1jQeYo/2dEaxtkEh4QdR756QjDj0YA6s52PgmxZksVN8hnXtgxOljkTsVriqNRd2yWG1n4fuJzinm1auR72lS2p6zZGJRnu225GHg/8tQ7RB8Lw0qdWLXEiHbLLyW5IQ0/gaeRQNGg==",
+          "SigningCertURL": "https://sns.us-east-2.amazonaws.com/SimpleNotificationService-6209c161c6221fdf56ec1eb5c821d112.pem",
+          "UnsubscribeURL": "https://sns.us-east-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-2:359312844241:dev--acc--quota-increase-request-changed-events--z9pb:ad9d962f-4db9-4b8e-9bf4-477467d61cb7"
+        }
+      }
+    ],
+    "parseObject": [
+      {
+        "json": {
+          "parsedObject": {
+            "specversion": "1.0",
+            "id": "361zTtxBkbLUOqpS1mL0T5IRQbC",
+            "source": "com.bluems.acc.quota",
+            "type": "com.bluems.acc.quota-increase-request-created",
+            "time": "2025-11-26T20:27:56.345Z",
+            "combluemsaccountid": "120423812583",
+            "data": {
+              "quotaIncreaseRequestId": "361zTOsvvs8iGC5k2GEVNmSTYsz",
+              "accountId": "345676220178",
+              "quotaId": "dsp--campaign--campaign-limit",
+              "response": null,
+              "status": "pending",
+              "value": 20,
+              "reason": "TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste",
+              "createdAt": "2025-11-26T20:27:52.970Z",
+              "updatedAt": "2025-11-26T20:27:52.970Z"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "23f680e5-4b4a-43ec-917d-96586fdbe0a9",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-14T15:36:44.912Z",
+      "updatedAt": "2025-12-14T15:36:44.912Z",
+      "role": "workflow:owner",
+      "workflowId": "YU41ok2iSGDQN5jq",
+      "projectId": "yFYBfulVbeQlFXcl"
+    }
+  ],
+  "tags": []
+}
